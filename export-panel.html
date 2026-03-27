@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Data Export Panel — Mini App</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+  <script type="module" src="assets/js/auth-guard.js"></script>
+  <style>
+    .export-panel {
+      max-width: 600px;
+      margin: 40px auto;
+      padding: 24px;
+      background: var(--card);
+      border: 2px solid var(--border);
+    }
+
+    .export-panel h2 {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .section {
+      margin-bottom: 32px;
+    }
+
+    .section-title {
+      font-weight: bold;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--border);
+      margin-bottom: 12px;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+
+    .btn-export {
+      padding: 8px 12px;
+      font-size: 12px;
+      background: var(--accent);
+      color: var(--bg);
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-weight: bold;
+    }
+
+    .btn-export:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .btn-export:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .stats-box {
+      background: var(--bg);
+      padding: 12px;
+      border: 1px solid var(--border);
+      margin-top: 12px;
+      font-size: 12px;
+      font-family: monospace;
+      white-space: pre-wrap;
+      word-break: break-all;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    .status {
+      padding: 12px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      margin-top: 12px;
+      font-size: 12px;
+      min-height: 40px;
+    }
+
+    .status.loading {
+      color: var(--secondary);
+    }
+
+    .status.success {
+      background: #d4f1d4;
+      color: #0d4d0d;
+    }
+
+    .status.error {
+      background: #fdd;
+      color: var(--error);
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid var(--border);
+      margin-bottom: 8px;
+      box-sizing: border-box;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .info-box {
+      background: #f0f0f0;
+      padding: 12px;
+      border: 1px dashed var(--border);
+      margin-bottom: 12px;
+      font-size: 12px;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+
+<body class="has-nav">
+  <nav>
+    <a href="index.html" class="nav-btn-home">Feed</a>
+    <a href="chat-personal.html" class="nav-btn-inbox">Inbox</a>
+    <a href="chat.html" class="nav-btn-chat">Global</a>
+    <a href="profile.html" class="nav-btn-profile">Perfil</a>
+  </nav>
+
+  <main class="container">
+    <div class="export-panel">
+      <h2>📥 Data Export Panel</h2>
+
+      <div class="info-box">
+        ℹ️ Descarga todos tus datos de usuaries y conversaciones globales.
+        Los archivos se guardarán en tu carpeta de descargas.
+      </div>
+
+      <!-- USERS SECTION -->
+      <div class="section">
+        <div class="section-title">👥 Usuaries</div>
+
+        <div class="button-group">
+          <button class="btn-export" id="btn-download-users">
+            📥 Descargar Usuaries
+          </button>
+          <button class="btn-export" id="btn-export-users-json">
+            💾 Exportar JSON
+          </button>
+          <button class="btn-export" id="btn-export-users-csv">
+            📊 Exportar CSV
+          </button>
+        </div>
+
+        <label>Nombre archivo (opcional):</label>
+        <input type="text" id="users-filename" placeholder="usuaries-backup.json" />
+
+        <div class="status" id="users-status"></div>
+        <div class="stats-box" id="users-stats" style="display:none;"></div>
+      </div>
+
+      <!-- GLOBAL CHAT SECTION -->
+      <div class="section">
+        <div class="section-title">🌐 Chat Global</div>
+
+        <div class="button-group">
+          <button class="btn-export" id="btn-download-global">
+            📥 Descargar Chat Global
+          </button>
+          <button class="btn-export" id="btn-export-global-json">
+            💾 Exportar JSON
+          </button>
+          <button class="btn-export" id="btn-export-global-csv">
+            📊 Exportar CSV
+          </button>
+        </div>
+
+        <label>Nombre archivo (opcional):</label>
+        <input type="text" id="global-filename" placeholder="chat-global-backup.csv" />
+
+        <div class="status" id="global-status"></div>
+        <div class="stats-box" id="global-stats" style="display:none;"></div>
+      </div>
+
+      <!-- ALL CONVERSATIONS SECTION -->
+      <div class="section">
+        <div class="section-title">💬 Todas las Conversaciones</div>
+
+        <div class="button-group">
+          <button class="btn-export" id="btn-download-all-convs">
+            📥 Descargar Todo (LENTO)
+          </button>
+          <button class="btn-export" id="btn-export-all-json">
+            💾 Exportar JSON
+          </button>
+        </div>
+
+        <div class="info-box">
+          ⚠️ Esto puede tardar varios minutos si hay muchas conversaciones.
+        </div>
+
+        <div class="status" id="all-convs-status"></div>
+        <div class="stats-box" id="all-convs-stats" style="display:none;"></div>
+      </div>
+
+      <!-- NEW: PERSONAL CHATS EXPORT -->
+      <div class="section">
+        <div class="section-title">👥 Chats Personales (Normalizado)</div>
+
+        <div class="button-group">
+          <button class="btn-export" id="btn-export-personal-csv">
+            📊 Exportar CSV Normalizado
+          </button>
+          <button class="btn-export" id="btn-export-personal-json">
+            💾 Exportar JSON
+          </button>
+        </div>
+
+        <label>Nombre archivo (opcional):</label>
+        <input type="text" id="personal-filename" placeholder="chats-personales.csv" />
+
+        <div class="info-box">
+          📋 Exporta todos los chats personales con campos normalizados
+        </div>
+
+        <div class="status" id="personal-status"></div>
+        <div class="stats-box" id="personal-stats" style="display:none;"></div>
+      </div>
+
+      <!-- NEW: ALL MESSAGES EXPORT -->
+      <div class="section">
+        <div class="section-title">🗣️ Todos los Mensajes (Combinado)</div>
+
+        <div class="button-group">
+          <button class="btn-export" id="btn-export-all-messages-csv">
+            📊 Exportar CSV Combinado
+          </button>
+          <button class="btn-export" id="btn-export-all-messages-json">
+            💾 Exportar JSON
+          </button>
+        </div>
+
+        <label>Nombre archivo (opcional):</label>
+        <input type="text" id="all-messages-filename" placeholder="todos-mensajes.csv" />
+
+        <div class="info-box">
+          🔀 Combina chat global + personales en un solo archivo con columna de tipo
+        </div>
+
+        <div class="status" id="all-messages-status"></div>
+        <div class="stats-box" id="all-messages-stats" style="display:none;"></div>
+      </div>
+
+      <!-- INFO SECTION -->
+      <div class="section">
+        <div class="section-title">📊 Información Rápida</div>
+
+        <button class="btn-export" id="btn-get-info">
+          🔍 Ver Info (Rápido)
+        </button>
+
+        <div class="status" id="info-status"></div>
+        <div class="stats-box" id="info-stats" style="display:none;"></div>
+      </div>
+
+      <!-- DEBUG SECTION -->
+      <div class="section">
+        <div class="section-title">🔧 Debug</div>
+
+        <button class="btn-export" id="btn-clear-data" style="background: #cc0000;">
+          🗑️ Limpiar Datos
+        </button>
+
+        <div class="status" id="debug-status"></div>
+      </div>
+    </div>
+  </main>
+
+  <script type="module">
+    import dataExportManager from './assets/js/data-export-manager.js';
+
+    // Helper para mostrar estado
+    function showStatus(elementId, message, type = 'loading') {
+      const el = document.getElementById(elementId);
+      el.textContent = message;
+      el.className = `status ${type}`;
+    }
+
+    function showStats(elementId, data) {
+      const el = document.getElementById(elementId);
+      el.textContent = typeof data === 'string' ? data : JSON.stringify(data, null, 2);
+      el.style.display = 'block';
+    }
+
+    function hideStats(elementId) {
+      document.getElementById(elementId).style.display = 'none';
+    }
+
+    // USUARIES
+    document.getElementById('btn-download-users').addEventListener('click', async () => {
+      try {
+        showStatus('users-status', '⏳ Descargando usuaries...');
+        hideStats('users-stats');
+
+        const users = await dataExportManager.downloadAllUsers();
+
+        showStatus('users-status', `✅ ${users.length} usuaries descargades`, 'success');
+        showStats('users-stats', `Total: ${users.length} usuaries\n\nPrimero: ${JSON.stringify(users[0], null, 2)}`);
+      } catch (e) {
+        showStatus('users-status', `❌ Error: ${e.message}`, 'error');
+      }
+    });
+
+    document.getElementById('btn-export-users-json').addEventListener('click', () => {
+      try {
+        const filename = document.getElementById('users-filename').value || undefined;
+        dataExportManager.exportAsJSON('users', filename);
+        showStatus('users-status', '✅ JSON descargado', 'success');
+      } catch (e) {
+        showStatus('users-status', `❌ Error: ${e.message}`, 'error');
+      }
+    });
+
+    document.getElementById('btn-export-users-csv').addEventListener('click', () => {
+      try {
+        const filename = document.getElementById('users-filename').value || undefined;
+        dataExportManager.exportUsersAsCSV(filename);
+        showStatus('users-status', '✅ CSV descargado', 'success');
+      } catch (e) {
+        showStatus('users-status', `❌ Error: ${e.message}`, 'error');
+      }
+    });
+
+    // CHAT GLOBAL
+    document.getElementById('btn-download-global').addEventListener('click', async () => {
+      try {
+        showStatus('global-status', '⏳ Descargando chat global...');
+        hideStats('global-stats');
+
+        const chat = await dataExportManager.downloadGlobalChat();
+
+        showStatus('global-status', `✅ ${chat.messages.length} mensajes descargados`, 'success');
+        showStats('global-stats', `Conversación: ${chat.conversationId}\nMensajes: ${chat.messages.length}\n\nPrimero: ${JSON.stringify(chat.messages[0], null, 2)}`);
+      } catch (e) {
+        showStatus('global-status', `❌ Error: ${e.message}`, 'error');
+      }
+    });
+
+    document.getElementById('btn-export-global-json').addEventListener('click', () => {
+      try {
+        const filename = document.getElementById('global-filename').value || undefined;
+        dataExportManager.exportAsJSON('global', filename);
+        showStatus('global-status', '✅ JSON descargado', 'success');
+      } catch (e) {
+        showStatus('global-status', `❌ Error: ${e.message}`, 'error');
+      }
+    });
+
+    document.getElementById('btn-export-global-csv').addEventListener('click', () => {
+      try {
+        const filename = document.getElementById('global-filename').value || undefined;
+        dataExportManager.exportGlobalChatAsCSV(filename);
+        showStatus('global-status', '✅ CSV descargado', 'success');
+      } catch (e) {
+        showStatus('global-status', `❌ Error: ${e.message}`, 'error');
+      }
+    });
+
+    // TODAS LAS CONVERSACIONES
+    document.getElementById('btn-download-all-convs').addEventListener('click', async () => {
+      try {
+        showStatus('all-convs-status', '⏳ Descargando todas las conversaciones (esto tarda)...');
+        hideStats('all-convs-stats');
+
+        const convs = await dataExportManager.downloadAllConversations();
+        const stats = dataExportManager.getStats();
+
+        showStatus('all-convs-status', `✅ ${Object.keys(convs).length} conversaciones descargadas`, 'success');
+        showStats('all-convs-stats', JSON.stringify(stats, null, 2));
+      } catch (e) {
+        showStatus('all-convs-status', `❌ Error: ${e.message}`, 'error');
+      }
+    });
+
+    document.getElementById('btn-export-all-json').addEventListener('click', () => {
+      try {
+        dataExportManager.exportAsJSON('all');
+        showStatus('all-convs-status', '✅ JSON descargado (TODO)', 'success');
+      } catch (e) {
+        showStatus('all-convs-status', `❌ Error: ${e.message}`, 'error');
+      }
+    });
+
+    // INFO RÁPIDA
+    document.getElementById('btn-get-info').addEventListener('click', async () => {
+      try {
+        showStatus('info-status', '⏳ Obteniendo información...');
+        hideStats('info-stats');
+
+        const info = await dataExportManager.getInfo();
+
+        showStatus('info-status', '✅ Información obtenida', 'success');
+        showStats('info-stats', JSON.stringify(info, null, 2));
+      } catch (e) {
+        showStatus('info-status', `❌ Error: ${e.message}`, 'error');
+      }
+    });
+
+    // CHATS PERSONALES - CSV NORMALIZADO
+    document.getElementById('btn-export-personal-csv').addEventListener('click', () => {
+      try {
+        showStatus('personal-status', '⏳ Preparando CSV de chats personales...');
+        const filename = document.getElementById('personal-filename').value || undefined;
+        dataExportManager.exportPersonalChatsAsCSV(filename);
+        showStatus('personal-status', '✅ CSV personalizado descargado', 'success');
+      } catch (e) {
+        showStatus('personal-status', `❌ Error: ${e.message}`, 'error');
+      }
+    });
+
+    document.getElementById('btn-export-personal-json').addEventListener('click', () => {
+      try {
+        showStatus('personal-status', '⏳ Preparando JSON de chats personales...');
+        dataExportManager.exportAsJSON('all');  // Gets all including personal
+        showStatus('personal-status', '✅ JSON descargado', 'success');
+      } catch (e) {
+        showStatus('personal-status', `❌ Error: ${e.message}`, 'error');
+      }
+    });
+
+    // TODOS LOS MENSAJES - CSV COMBINADO
+    document.getElementById('btn-export-all-messages-csv').addEventListener('click', () => {
+      try {
+        showStatus('all-messages-status', '⏳ Preparando CSV combinado...');
+        const filename = document.getElementById('all-messages-filename').value || undefined;
+        dataExportManager.exportAllMessagesAsCSV(filename);
+        showStatus('all-messages-status', '✅ CSV combinado descargado', 'success');
+      } catch (e) {
+        showStatus('all-messages-status', `❌ Error: ${e.message}`, 'error');
+      }
+    });
+
+    document.getElementById('btn-export-all-messages-json').addEventListener('click', () => {
+      try {
+        showStatus('all-messages-status', '⏳ Preparando JSON...');
+        dataExportManager.exportAsJSON('all');
+        showStatus('all-messages-status', '✅ JSON descargado', 'success');
+      } catch (e) {
+        showStatus('all-messages-status', `❌ Error: ${e.message}`, 'error');
+      }
+    });
+
+    // LIMPIAR
+    document.getElementById('btn-clear-data').addEventListener('click', () => {
+      dataExportManager.clear();
+      showStatus('debug-status', '✅ Datos limpiados de memoria', 'success');
+    });
+  </script>
+</body>
+
+</html>

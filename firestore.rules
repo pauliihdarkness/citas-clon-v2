@@ -1,0 +1,21 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Users: Solo lectura (públicos)
+    match /users/{userId} {
+      allow read: if true;  // Todos pueden leer profiles
+      allow write: if request.auth.uid == userId;  // Solo owner puede escribir
+    }
+    
+    // Conversaciones: Acceso para participantes
+    match /conversaciones/{conversationId} {
+      allow read, write: if true;  // Simplificado para tu app
+      
+      // Mensajes dentro de conversaciones
+      match /mensajes/{messageId} {
+        allow read, write: if true;  // Simplificado
+      }
+    }
+  }
+}

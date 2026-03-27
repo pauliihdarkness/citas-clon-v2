@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Login — Mini App</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+  <script type="module" src="assets/js/auth-guard.js"></script>
+</head>
+  <style>
+    .login-container {
+      max-width: 500px;
+      width: 90%;
+      background: var(--card);
+      border: 3px double var(--border);
+      padding: 40px 30px;
+      position: relative;
+      box-shadow: 0 0 20px rgba(255, 176, 0, 0.1);
+      text-align: center;
+    }
+
+    .login-container::before {
+      content: "STATUS: BETA v2.0";
+      position: absolute;
+      top: -12px;
+      right: 20px;
+      background: var(--bg);
+      padding: 0 10px;
+      font-size: 10px;
+      color: var(--accent);
+      border: 1px solid var(--border);
+    }
+
+    .terminal-header {
+      margin-bottom: 30px;
+    }
+
+    .terminal-header h1 {
+      font-size: 1.8rem;
+      margin: 0;
+      text-transform: uppercase;
+      letter-spacing: 4px;
+      text-shadow: 0 0 15px var(--text);
+    }
+
+    .project-info {
+      background: rgba(255, 176, 0, 0.05);
+      border: 1px dashed var(--secondary);
+      padding: 20px;
+      margin: 25px 0;
+      font-size: 0.9rem;
+      color: var(--text);
+      line-height: 1.6;
+      text-align: left;
+    }
+
+    .project-info strong {
+      color: var(--accent);
+      text-transform: uppercase;
+    }
+
+    .auth-prompt {
+      margin-top: 30px;
+      font-weight: bold;
+      letter-spacing: 2px;
+      color: var(--secondary);
+      font-size: 12px;
+    }
+
+    .scanline-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+      background-size: 100% 3px, 3px 100%;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    .btn.google {
+      width: 100%;
+      padding: 15px;
+      font-size: 14px;
+      border-width: 3px;
+      margin-top: 15px;
+    }
+
+    .warning-text {
+      color: var(--error);
+      font-size: 10px;
+      margin-top: 20px;
+      text-transform: uppercase;
+      opacity: 0.8;
+    }
+
+    @media (max-width: 480px) {
+      .login-container {
+        padding: 30px 15px;
+        border-width: 2px;
+      }
+      .terminal-header h1 {
+        font-size: 1.4rem;
+        letter-spacing: 2px;
+      }
+      .project-info {
+        padding: 15px;
+        font-size: 0.85rem;
+      }
+      .auth-prompt {
+        font-size: 10px;
+        letter-spacing: 1px;
+      }
+      .btn.google {
+        font-size: 12px;
+        padding: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="centered">
+    <div class="login-container">
+      <div class="scanline-overlay"></div>
+      
+      <header class="terminal-header">
+        <h1>TERMINAL_ACCESS</h1>
+        <div id="date-display" style="font-size: 10px; color: var(--secondary); margin-top: 5px;"></div>
+      </header>
+
+      <div class="project-info">
+        <strong>_SYSTEM_OVERVIEW:</strong><br>
+        Esta es una plataforma experimental de mensajería y geolocalización con estética retro IBM-3270. 
+        <br><br>
+        <strong>_AVISO_IMPORTANTE:</strong><br>
+        Versión de <strong>PRUEBA (V2.0)</strong>. Este entorno se utiliza para tests de comunicación y mapeo de usuaries en tiempo real.
+      </div>
+
+      <div class="auth-prompt">
+        USER_AUTHENTICATION_REQUIRED
+      </div>
+
+      <div class="login-box">
+        <button id="google-login-btn" class="btn google">
+          <i data-lucide="log-in" style="width: 18px; height: 18px; margin-right: 10px; vertical-align: middle;"></i>
+          ACCEDER_CON_GOOGLE
+        </button>
+      </div>
+
+      <div class="warning-text">
+        [ ADVERTENCIA: TODA LA ACTIVIDAD ESTÁ SIENDO MONITOREADA ]
+      </div>
+    </div>
+  </main>
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    // Simple clock update
+    function updateClock() {
+      const now = new Date();
+      document.getElementById('date-display').textContent = 'DATE: ' + now.toLocaleString('es-ES').toUpperCase();
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+    
+    window.addEventListener('load', () => lucide.createIcons());
+  </script>
+  <script type="module" src="assets/js/auth.js"></script>
+</body>
+</html>

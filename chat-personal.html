@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chat Personal - Mini App</title>
+    <link rel="stylesheet" href="assets/css/style.css" />
+    <link rel="stylesheet" href="assets/css/notifications.css" />
+    <script type="module" src="assets/js/auth-guard.js"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav>
+        <div class="nav-header">
+            <span class="nav-logo">SYSTEM</span>
+            <button id="menu-toggle" class="hamburger-btn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+        <div class="nav-links">
+            <a href="index.html">Feed</a>
+            <a href="map.html">Mapa</a>
+            <a href="explorer.html">Explorer</a>
+            <a href="storage-explorer.html">Storage</a>
+            <a href="chat-personal.html" class="nav-btn-inbox nav-active">Inbox</a>
+            <a href="chat.html" class="nav-btn-chat">Global</a>
+            <a href="activity.html" class="nav-btn-activity">Actividad</a>
+            <a href="export.html">Exportar</a>
+            <a href="profile.html" class="nav-btn-profile">Perfil</a>
+        </div>
+    </nav>
+
+    <div class="chat-container">
+        <!-- Sidebar: Lista de conversaciones -->
+        <aside class="chat-sidebar">
+            <div class="chat-sidebar-header">
+                <h2>Mensajes</h2>
+                <div style="display: flex; gap: 8px; margin-top: 8px;">
+                    <input type="text" id="conversation-search" placeholder="Buscar..." class="filter-group"
+                        style="flex: 1; padding: 8px; box-sizing: border-box; background: var(--bg); border: 2px solid var(--border); color: var(--text); font-family: 'Courier New', monospace;">
+                    <button id="change-alias-btn" class="btn-small" title="Cambiar alias">
+                        <i data-lucide="user-cog" style="width: 14px; height: 14px;"></i>
+                    </button>
+                </div>
+            </div>
+            <div id="conversations-list" class="conversations-list">
+                <!-- Renderizado dinámico -->
+                <div class="loading">Cargando...</div>
+            </div>
+        </aside>
+
+        <!-- Main: Área de chat -->
+        <main id="chat-area" class="chat-main" style="display: none;">
+            <div class="chat-header">
+                <div style="display: flex; gap: 12px; align-items: center;">
+                    <button id="chat-back-btn" class="chat-back-btn" title="Volver">
+                        <i data-lucide="arrow-left" style="width: 16px; height: 16px;"></i> 
+                    </button>
+                    <img id="chat-photo" src="" class="profile-photo"
+                        style="width: 40px; height: 40px; border: 2px solid var(--border); filter: sepia(1) saturate(5) hue-rotate(-20deg) contrast(1.2);" />
+                    <div>
+                        <h3 id="chat-title" style="text-shadow: 0 0 5px var(--text);">Usuario</h3>
+                        <p id="chat-status">En línea</p>
+                    </div>
+                </div>
+                <div class="chat-actions">
+                    <!-- Botones extra si se necesitan -->
+                </div>
+            </div>
+
+            <div id="messages-box" class="messages-box">
+                <!-- Mensajes -->
+            </div>
+
+            <div class="chat-input-area"
+                style="padding: 16px; border-top: 2px solid var(--border); display: flex; gap: 8px; background: var(--card); box-shadow: 0 -2px 10px rgba(255, 176, 0, 0.1);">
+                <textarea id="message-input" placeholder="Escribe un mensaje..."
+                    style="flex: 1; padding: 12px; font-family: 'Courier New', monospace; background: var(--bg); border: 2px solid var(--border); color: var(--text); resize: none; min-height: 44px; max-height: 150px; overflow-y: auto; line-height: 1.4;"></textarea>
+                <button id="send-btn" class="btn" style="height: fit-content; align-self: flex-end;">Enviar</button>
+            </div>
+        </main>
+
+        <!-- Estado vacío -->
+        <main id="empty-state" class="chat-main centered"
+            style="background: var(--bg); text-align: center; color: var(--secondary);">
+            <i data-lucide="message-square" size="48" style="margin-bottom: 24px;"></i>
+            <p style="text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 5px var(--secondary);">Selecciona una conversación para comenzar</p>
+        </main>
+    </div>
+
+    <!-- Alias Modal -->
+    <div id="alias-modal" class="retro-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span>CONFIGURACIÓN DE USUARIO</span>
+                <button id="close-alias-modal" class="close-btn">[X]</button>
+            </div>
+            <div class="modal-body" style="flex-direction: column; align-items: stretch; gap: 16px;">
+                <p id="current-alias-display" style="color: var(--secondary); font-size: 0.9em;">Alias actual: ...</p>
+                <div class="filter-group">
+                    <label>NUEVO ALIAS:</label>
+                    <input type="text" id="new-alias-input" placeholder="Ingresa alias..." style="width: 100%;" />
+                </div>
+                <div style="display: flex; gap: 12px; justify-content: flex-end;">
+                    <button id="cancel-alias" class="btn-small" style="background: #333; color: #fff; border-color: #555;">[ CANCELAR ]</button>
+                    <button id="save-alias" class="btn-small">[ ACEPTAR ]</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script type="module" src="assets/js/utils.js"></script>
+    <script type="module" src="assets/js/menu-toggle.js"></script>
+    <script type="module" src="assets/js/notifications.js"></script>
+  <script type="module" src="assets/js/chat-personal.js"></script>
+    <script type="module" src="assets/js/page-transitions.js"></script>
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+
+</html>

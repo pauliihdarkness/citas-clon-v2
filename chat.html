@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Chats — Mini App</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/notifications.css">
+  <script type="module" src="assets/js/auth-guard.js"></script>
+</head>
+
+<body class="has-nav">
+  <nav>
+    <div class="nav-header">
+      <span class="nav-logo">SYSTEM</span>
+      <button id="menu-toggle" class="hamburger-btn">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div class="nav-links">
+      <a href="index.html" class="nav-btn-home">Feed</a>
+      <a href="map.html">Mapa</a>
+      <a href="explorer.html">Explorer</a>
+      <a href="storage-explorer.html">Storage</a>
+      <a href="chat-personal.html" class="nav-btn-inbox">Inbox</a>
+      <a href="chat.html" class="nav-btn-chat nav-active">Global</a>
+      <a href="activity.html" class="nav-btn-activity">Actividad</a>
+      <a href="export.html" class="nav-btn-export">Exportar</a>
+      <a href="profile.html" class="nav-btn-profile">Perfil</a>
+    </div>
+  </nav>
+
+  <main class="chat-container">
+    <div class="chat-sidebar">
+      <div class="chat-sidebar-header">
+        <h2>Conversaciones</h2>
+        <input type="text" id="conversation-search" placeholder="Buscar..."
+          style="width: 100%; margin-top: 8px; padding: 8px; box-sizing: border-box; font-family: 'Courier New', monospace; border: 1px solid var(--border);">
+      </div>
+      <div id="conversations" class="conversations-list"></div>
+    </div>
+
+    <div class="chat-main">
+      <div class="chat-header" id="chat-header" style="display: none;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <button id="chat-back-btn" class="chat-back-btn" title="Volver">
+            <i data-lucide="arrow-left" style="width: 16px; height: 16px;"></i>
+          </button>
+          <div>
+            <h3 id="chat-title"></h3>
+            <p id="chat-status"></p>
+          </div>
+        </div>
+      </div>
+      <div id="conversation-messages" class="messages-box"></div>
+    </div>
+  </main>
+
+  <script type="module" src="assets/js/page-transitions.js"></script>
+  <script type="module" src="assets/js/menu-toggle.js"></script>
+  <script type="module" src="assets/js/notifications.js"></script>
+  <script type="module" src="assets/js/chat.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    window.addEventListener('load', () => lucide.createIcons());
+  </script>
+</body>
+
+</html>

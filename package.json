@@ -1,0 +1,23 @@
+{
+  "name": "citas-clon-v2",
+  "version": "1.0.0",
+  "description": "Citas Clon V2",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git"
+  },
+  "keywords": ["vite", "javascript", "firebase", "social"],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+  },
+  "devDependencies": {
+    "vite": "^8.0.1"
+  }
+}

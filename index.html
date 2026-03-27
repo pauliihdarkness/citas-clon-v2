@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Mini App — Feed</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/notifications.css">
+  <script type="module" src="assets/js/auth-guard.js"></script>
+</head>
+
+<body class="has-nav">
+  <nav>
+    <div class="nav-header">
+      <span class="nav-logo">SYSTEM</span>
+      <button id="menu-toggle" class="hamburger-btn">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div class="nav-links">
+      <a href="index.html" class="nav-btn-home nav-active">Feed</a>
+      <a href="map.html" class="nav-btn-map">Mapa</a>
+      <a href="explorer.html">Explorer</a>
+      <a href="storage-explorer.html">Storage</a>
+      <a href="chat-personal.html" class="nav-btn-inbox">Inbox</a>
+      <a href="chat.html" class="nav-btn-chat">Global</a>
+      <a href="activity.html" class="nav-btn-activity">Actividad</a>
+      <a href="export.html" class="nav-btn-export">Exportar</a>
+      <a href="profile.html" class="nav-btn-profile">Perfil</a>
+    </div>
+  </nav>
+
+  <main id="main-content">
+    <section class="container">
+      <h1>Feed de perfiles</h1>
+
+      <!-- 🔎 Barra de filtros -->
+      <section class="filters-container">
+        <div class="filters-header">
+          <h3><i data-lucide="search"></i> Filtros <span id="user-count"></span></h3>
+          <button id="clear-filters" class="btn-small">Limpiar</button>
+        </div>
+        <div class="filters-grid">
+          <div class="filter-group">
+            <label><i data-lucide="user"></i> Alias</label>
+            <input type="text" id="searchAlias" placeholder="Buscar..." autocomplete="off" />
+          </div>
+          <div class="filter-group">
+            <label><i data-lucide="map-pin"></i> Ciudad</label>
+            <input type="text" id="searchCiudad" placeholder="Buscar..." autocomplete="off" />
+          </div>
+          <div class="filter-group">
+            <label><i data-lucide="cake-slice"></i> Edad</label>
+            <input type="number" id="searchEdad" placeholder="Edad" min="18" max="99" autocomplete="off" />
+          </div>
+          <div class="filter-group">
+            <label>Opciones</label>
+            <div class="filter-checkboxes">
+              <label class="checkbox-label">
+                <input type="checkbox" id="filterMembresia" />
+                <span><i data-lucide="crown"></i></span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" id="filterOnline" />
+                <span><i data-lucide="circle-dot"></i></span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" id="filterPlatform" />
+                <span><i data-lucide="smartphone"></i></span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div id="feed" class="cards-grid"></div>
+    </section>
+  </main>
+
+  <script type="module" src="assets/js/page-transitions.js"></script>
+  <script type="module" src="assets/js/menu-toggle.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script type="module" src="assets/js/notifications.js"></script>
+  <script type="module" src="assets/js/feed.js"></script>
+  <script>
+    window.addEventListener('load', () => lucide.createIcons());
+  </script>
+</body>
+
+</html>

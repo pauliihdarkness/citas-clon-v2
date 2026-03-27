@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Actividad - Mini App</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/notifications.css" />
+  <script type="module" src="assets/js/auth-guard.js"></script>
+  <style>
+    .activity-container {
+      max-width: 600px;
+      margin: 24px auto;
+      padding: 0 16px;
+    }
+
+    .activity-header {
+      padding: 16px;
+      background: var(--card);
+      border-radius: 0;
+      margin-bottom: 20px;
+      text-align: center;
+      border: 2px solid var(--border);
+      box-shadow: 0 0 10px rgba(255, 176, 0, 0.2);
+    }
+
+    .activity-header h2 {
+      margin: 0 0 8px 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-transform: uppercase;
+      text-shadow: 0 0 5px var(--text);
+    }
+
+    .activity-header .stats {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      font-size: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+      margin-top: 12px;
+    }
+
+    .stat {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .stat-value {
+      font-weight: bold;
+      color: var(--accent);
+      text-shadow: 0 0 5px var(--accent);
+    }
+
+    .activity-filters {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      padding: 8px 12px;
+      background: var(--bg);
+      border: 2px solid var(--border);
+      border-radius: 0;
+      cursor: pointer;
+      font-size: 12px;
+      transition: all 0.1s;
+      color: var(--text);
+      font-family: 'Courier New', monospace;
+      text-transform: uppercase;
+      font-weight: bold;
+    }
+
+    .filter-btn:hover {
+      background: var(--text);
+      color: var(--bg);
+      box-shadow: 0 0 10px var(--text);
+    }
+
+    .filter-btn.active {
+      background: var(--text);
+      color: var(--bg);
+      box-shadow: 0 0 15px var(--text);
+    }
+
+    .activity-group {
+      margin-bottom: 24px;
+    }
+
+    .activity-group-title {
+      font-size: 12px;
+      font-weight: bold;
+      text-transform: uppercase;
+      color: var(--secondary);
+      letter-spacing: 1px;
+      padding: 12px 8px;
+      border-bottom: 2px solid var(--border);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .activity-item {
+      display: flex;
+      align-items: center;
+      padding: 12px;
+      background: var(--card);
+      border: 2px solid var(--border);
+      border-radius: 0;
+      margin-bottom: 8px;
+      cursor: pointer;
+      transition: all 0.1s;
+    }
+
+    .activity-item:hover {
+      background: rgba(255, 176, 0, 0.1);
+      border-color: var(--accent);
+      transform: translateX(4px);
+      box-shadow: 0 0 10px rgba(255, 176, 0, 0.2);
+    }
+
+    .activity-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 0;
+      background: var(--card);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 12px;
+      flex-shrink: 0;
+      font-weight: bold;
+      color: var(--text);
+      overflow: hidden;
+    }
+
+    .activity-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: sepia(1) saturate(5) hue-rotate(-20deg) contrast(1.2);
+    }
+
+    .activity-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .activity-name {
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-transform: uppercase;
+    }
+
+    .online-badge {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 0;
+      background: var(--accent);
+      box-shadow: 0 0 5px var(--accent);
+    }
+
+    .offline-badge {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 0;
+      background: var(--secondary);
+    }
+
+    .activity-meta {
+      display: flex;
+      gap: 12px;
+      font-size: 11px;
+      color: var(--secondary);
+    }
+
+    .activity-meta span {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .activity-time {
+      font-weight: 600;
+      color: var(--accent);
+      font-size: 12px;
+    }
+
+    .activity-location {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+    }
+
+    .premium-badge {
+      display: inline-block;
+      padding: 2px 6px;
+      background: var(--accent);
+      color: var(--bg);
+      border-radius: 0;
+      font-size: 10px;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 40px 16px;
+      color: var(--secondary);
+      border: 1px dashed var(--border);
+    }
+
+    .loading {
+      text-align: center;
+      padding: 40px 16px;
+      color: var(--text);
+    }
+
+    .error {
+      background: var(--bg);
+      color: var(--error);
+      padding: 16px;
+      border: 2px solid var(--error);
+      margin: 16px;
+      text-shadow: 0 0 5px var(--error);
+    }
+
+    .sort-controls {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+      align-items: center;
+    }
+
+    .sort-label {
+      font-size: 12px;
+      color: var(--secondary);
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    .sort-dropdown {
+      padding: 8px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 0;
+      font-size: 12px;
+      cursor: pointer;
+      color: var(--text);
+      font-family: 'Courier New', monospace;
+    }
+
+    @media (max-width: 600px) {
+      .activity-container {
+        margin: 16px 0;
+        padding: 0;
+      }
+
+      .activity-item {
+        border-radius: 0;
+        margin-bottom: 0;
+        border-bottom: 2px solid var(--border);
+      }
+
+      .activity-item:last-child {
+        border-bottom: none;
+      }
+    }
+  </style>
+</head>
+
+<body class="has-nav">
+  <nav>
+    <div class="nav-header">
+      <span class="nav-logo">SYSTEM</span>
+      <button id="menu-toggle" class="hamburger-btn">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div class="nav-links">
+      <a href="index.html">Feed</a>
+      <a href="map.html">Mapa</a>
+      <a href="explorer.html">Explorer</a>
+      <a href="storage-explorer.html">Storage</a>
+      <a href="chat-personal.html" class="nav-btn-inbox">Inbox</a>
+      <a href="chat.html" class="nav-btn-chat">Global</a>
+      <a href="activity.html" class="nav-btn-activity nav-active">Actividad</a>
+      <a href="export.html" class="nav-btn-export">Exportar</a>
+      <a href="profile.html" class="nav-btn-profile">Perfil</a>
+    </div>
+  </nav>
+
+  <main class="container">
+    <div class="activity-container">
+      <div class="activity-header">
+        <h2>
+          <i data-lucide="activity"></i>
+          Actividad de Usuarixs
+        </h2>
+        <div class="stats">
+          <div class="stat">
+            <span>👥 En línea:</span>
+            <span class="stat-value" id="online-count">0</span>
+          </div>
+          <div class="stat">
+            <span>👤 Total:</span>
+            <span class="stat-value" id="total-count">0</span>
+          </div>
+          <div class="stat">
+            <span>⏰ Actualizado hace:</span>
+            <span class="stat-value" id="update-time">-</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="sort-controls">
+        <label class="sort-label">Ordenar por:</label>
+        <select id="sort-select" class="sort-dropdown">
+          <option value="recent">Más Reciente</option>
+          <option value="oldest">Más Antiguo</option>
+          <option value="online">En Línea Primero</option>
+          <option value="name">Por Nombre</option>
+        </select>
+      </div>
+
+      <div class="activity-filters">
+        <button class="filter-btn active" data-filter="all">
+          <i data-lucide="filter-x"></i> Todos
+        </button>
+        <button class="filter-btn" data-filter="online">
+          <i data-lucide="circle-dot"></i> En Línea
+        </button>
+        <button class="filter-btn" data-filter="offline">
+          <i data-lucide="circle"></i> Desconectados
+        </button>
+        <button class="filter-btn" data-filter="premium">
+          <i data-lucide="crown"></i> Premium
+        </button>
+        <button class="filter-btn" data-filter="today">
+          <i data-lucide="calendar"></i> Hoy
+        </button>
+      </div>
+
+      <div id="activity-content">
+        <p class="loading">
+          <i data-lucide="loader"></i> Cargando actividad...
+        </p>
+      </div>
+    </div>
+  </main>
+
+  <script type="module" src="assets/js/notifications.js"></script>
+  <script type="module" src="assets/js/activity.js"></script>
+  <script type="module" src="assets/js/menu-toggle.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+
+</html>

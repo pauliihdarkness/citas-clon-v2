@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SYSTEM Explorer - Firestore Console</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/notifications.css">
+  <script type="module" src="assets/js/auth-guard.js"></script>
+  <style>
+    /* Estilos para la barra de progreso retro */
+    .explorer-footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 32px;
+      background: var(--card);
+      border-top: 2px solid var(--border);
+      display: none; /* Se activa via JS */
+      align-items: center;
+      padding: 0 16px;
+      z-index: 1300;
+      font-size: 11px;
+      color: var(--text);
+      gap: 12px;
+    }
+
+    .explorer-footer.active {
+      display: flex;
+    }
+
+    .progress-container {
+      flex: 1;
+      height: 12px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: var(--accent);
+      box-shadow: 0 0 10px var(--accent);
+      transition: width 0.3s ease;
+    }
+
+    .progress-bar::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: repeating-linear-gradient(90deg, transparent 0, transparent 4px, var(--bg) 4px, var(--bg) 6px);
+      opacity: 0.3;
+    }
+
+    #process-name {
+      text-transform: uppercase;
+      min-width: 200px;
+      white-space: nowrap;
+    }
+  </style>
+</head>
+
+<body class="has-nav">
+  <nav>
+    <div class="nav-header">
+      <span class="nav-logo">SYSTEM CO</span>
+      <button id="menu-toggle" class="hamburger-btn">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div class="nav-links">
+      <a href="index.html">Feed</a>
+      <a href="map.html">Mapa</a>
+      <a href="explorer.html" class="nav-active">Explorer</a>
+      <a href="storage-explorer.html">Storage</a>
+      <a href="chat-personal.html">Inbox</a>
+      <a href="chat.html">Global</a>
+      <a href="activity.html">Actividad</a>
+      <a href="export.html">Exportar</a>
+      <a href="profile.html">Perfil</a>
+    </div>
+  </nav>
+
+  <main class="explorer-container">
+    <div class="explorer-sidebar">
+      <h3>_COLECCIONES</h3>
+      <div id="collection-list" class="selectable-list">
+        <button class="list-item active" data-collection="users">_USERS</button>
+        <button class="list-item" data-collection="conversaciones">_CONV</button>
+      </div>
+    </div>
+
+    <div class="explorer-list-pane">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+        <h3 style="margin: 0;">_DOCUMENTOS</h3>
+        <button id="add-doc-btn" class="btn-small" style="background: var(--bg); border-color: var(--accent); color: var(--accent);">+ NUEVO DOC</button>
+      </div>
+      <div class="search-prompt">
+        <span class="prompt-label">C:\&gt;</span>
+        <input type="text" id="search-input" placeholder="buscar..." autocomplete="off">
+      </div>
+      <div id="document-list" class="selectable-list scrollable">
+        <p class="loading">Cargando...</p>
+      </div>
+    </div>
+
+    <div class="explorer-detail-pane">
+      <h3>_DETALLE</h3>
+      <div id="document-detail" class="detail-view scrollable">
+        <p class="empty">Selecciona un documento</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- Image Preview Modal -->
+  <div id="image-modal" class="retro-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <span>PREVISUALIZACIÓN DE IMAGEN</span>
+        <button id="close-modal" class="close-btn">[X]</button>
+      </div>
+      <div class="modal-body">
+        <img id="modal-img" src="" alt="Vista previa">
+        <div class="scanlines"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Value Modal -->
+  <div id="edit-modal" class="retro-modal">
+    <!-- ... existing modal content ... -->
+    <div class="modal-content">
+      <div class="modal-header">
+        <span id="edit-modal-title">EDITAR VALOR</span>
+        <button id="close-edit-modal" class="close-btn">[X]</button>
+      </div>
+      <div class="modal-body" style="flex-direction: column; align-items: stretch; gap: 16px;">
+        <p id="edit-key-display" style="color: var(--secondary); font-size: 0.9em;"></p>
+        <div class="filter-group">
+          <label>NUEVO VALOR:</label>
+          <input type="text" id="edit-value-input" style="width: 100%;" />
+        </div>
+        <div style="display: flex; gap: 12px; justify-content: flex-end;">
+          <button id="cancel-edit" class="btn-small" style="background: #333; color: #fff; border-color: #555;">[
+            CANCELAR ]</button>
+          <button id="save-edit" class="btn-small">[ ACEPTAR ]</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Field Modal -->
+  <div id="add-field-modal" class="retro-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <span>AGREGAR NUEVO CAMPO</span>
+        <button id="close-add-modal" class="close-btn">[X]</button>
+      </div>
+      <div class="modal-body" style="flex-direction: column; align-items: stretch; gap: 16px;">
+        <div class="filter-group">
+          <label>CLAVE / KEY:</label>
+          <input type="text" id="add-key-input" placeholder="ej: nombre, edad, activo..." style="width: 100%;" />
+        </div>
+        <div class="filter-group">
+          <label>VALOR / VALUE:</label>
+          <input type="text" id="add-value-input" placeholder="ej: Juan, 25, true..." style="width: 100%;" />
+        </div>
+        <div style="display: flex; gap: 12px; justify-content: flex-end;">
+          <button id="cancel-add" class="btn-small" style="background: #333; color: #fff; border-color: #555;">[
+            CANCELAR ]</button>
+          <button id="save-add" class="btn-small">[ ACEPTAR ]</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Document Modal -->
+  <div id="add-doc-modal" class="retro-modal">
+    <div class="modal-content" style="max-width: 600px; width: 90%; max-height: 90vh; display: flex; flex-direction: column;">
+      <div class="modal-header">
+        <span>CREAR NUEVO DOCUMENTO</span>
+        <button id="close-add-doc-modal" class="close-btn">[X]</button>
+      </div>
+      <div class="modal-body" style="flex: 1; display: flex; flex-direction: column; overflow: hidden; gap: 10px; padding-bottom: 20px;">
+        <p id="add-doc-collection-display" style="color: var(--secondary); font-size: 0.9em; margin-bottom: 0;"></p>
+        <div class="filter-group" style="flex-shrink: 0;">
+          <label style="font-size: 0.8em; color: var(--secondary);">ID DEL DOCUMENTO (OPCIONAL):</label>
+          <input type="text" id="add-doc-id-input" placeholder="ej: doc123 o vacio para ID auto" style="width: 100%; padding: 8px; box-sizing: border-box;" />
+        </div>
+        
+        <!-- Contenedor dinámico según la colección -->
+        <div id="add-doc-fields-container" style="flex: 1; overflow-y: auto; /* IMPORTANTE: Barra de scroll aquí */ padding-right: 15px; margin-top: 10px; min-height: 200px;"></div>
+
+        <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 16px; flex-shrink: 0; border-top: 1px solid var(--border); padding-top: 16px;">
+          <button id="cancel-add-doc" class="btn-small" style="background: #333; color: #fff; border-color: #555;">[ CANCELAR ]</button>
+          <button id="save-add-doc" class="btn-small">[ CREAR ]</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer id="explorer-footer" class="explorer-footer">
+    <span id="process-name">Cargando sistema...</span>
+    <div class="progress-container">
+      <div id="progress-bar" class="progress-bar"></div>
+    </div>
+    <span id="progress-percent">0%</span>
+  </footer>
+
+  <script type="module" src="assets/js/page-transitions.js"></script>
+  <script type="module" src="assets/js/menu-toggle.js"></script>
+  <script type="module" src="assets/js/notifications.js"></script>
+  <script type="module" src="assets/js/explorer.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    window.addEventListener('load', () => lucide.createIcons());
+  </script>
+</body>
+
+</html>

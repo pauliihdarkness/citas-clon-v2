@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FATAL ERROR 404 - SYSTEM</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+  <script type="module" src="assets/js/auth-guard.js"></script>
+  <style>
+    .error-404 {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      text-align: center;
+      padding: 20px;
+      background: var(--bg);
+      color: var(--error);
+      font-family: 'Courier New', monospace;
+    }
+
+    .error-code {
+      font-size: 8rem;
+      font-weight: bold;
+      margin: 0;
+      text-shadow: 0 0 20px var(--error);
+      animation: flicker 0.1s infinite alternate;
+    }
+
+    .error-message {
+      font-size: 1.5rem;
+      margin: 20px 0;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+    }
+
+    .system-log {
+      background: rgba(255, 60, 0, 0.1);
+      border: 1px dashed var(--error);
+      padding: 15px;
+      margin: 20px 0;
+      max-width: 500px;
+      text-align: left;
+      font-size: 0.9rem;
+      color: var(--error);
+      opacity: 0.8;
+    }
+
+    @keyframes flicker {
+      0% { opacity: 0.8; }
+      100% { opacity: 1; }
+    }
+
+    .btn.reboot {
+      margin-top: 30px;
+      border-color: var(--error);
+      color: var(--error);
+    }
+
+    .btn.reboot:hover {
+      background: var(--error);
+      color: var(--bg);
+      box-shadow: 0 0 20px var(--error);
+    }
+
+    .cursor {
+      display: inline-block;
+      width: 10px;
+      height: 1.2em;
+      background: var(--error);
+      margin-left: 5px;
+      animation: blink 1s step-end infinite;
+      vertical-align: middle;
+    }
+
+    @keyframes blink {
+      from, to { opacity: 1; }
+      50% { opacity: 0; }
+    }
+  </style>
+</head>
+
+<body class="error-page">
+  <div class="error-404">
+    <h1 class="error-code">404</h1>
+    <p class="error-message">FATAL_ERROR: FILE_NOT_FOUND</p>
+    
+    <div class="system-log">
+      <div>[STATUS] SEEKING ADDRESS... FAILED</div>
+      <div>[INFO] SECTOR 404: DATA_NULL</div>
+      <div>[INFO] SYSTEM INTERRUPT REQUESTED BY USER</div>
+      <div>[WARN] CONNECTION REFUSED: NO_SUCH_RESOURCE</div>
+      <div>C:\> SYSTEM_HALT <span class="cursor"></span></div>
+    </div>
+
+    <p style="color: var(--secondary); font-size: 0.8rem; margin-top: 10px;">
+      EL RECURSO SOLICITADO NO EXISTE O HA SIDO ELIMINADO.
+    </p>
+
+    <a href="index.html" class="btn reboot">REINICIAR SISTEMA [ENTER]</a>
+  </div>
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    window.addEventListener('load', () => lucide.createIcons());
+  </script>
+</body>
+
+</html>

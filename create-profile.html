@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CREAR PERFIL - SYSTEM</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/notifications.css">
+  <script type="module" src="assets/js/auth-guard.js"></script>
+  <style>
+    .create-profile-container {
+      max-width: 600px;
+      margin: 40px auto;
+      padding: 24px;
+      background: var(--card);
+      border: 2px solid var(--border);
+      position: relative;
+    }
+
+    .form-header {
+      border-bottom: 2px solid var(--border);
+      margin-bottom: 24px;
+      padding-bottom: 12px;
+    }
+
+    .form-header h1 {
+      margin: 0;
+      font-size: 1.5rem;
+      text-transform: uppercase;
+    }
+
+    .profile-form {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .photo-upload-container {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      padding: 15px;
+      background: rgba(255, 176, 0, 0.05);
+      border: 1px dashed var(--secondary);
+    }
+
+    .photo-preview {
+      width: 100px;
+      height: 100px;
+      border: 2px solid var(--border);
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      color: var(--secondary);
+    }
+
+    .textarea-retro {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 10px;
+      font-family: 'Courier New', monospace;
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .textarea-retro:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 10px rgba(255, 204, 0, 0.2);
+    }
+
+    .form-footer {
+      margin-top: 30px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 15px;
+    }
+
+    .helper-text {
+      font-size: 0.8rem;
+      color: var(--secondary);
+      margin-top: 4px;
+    }
+
+    .geo-result-item:hover {
+      background: rgba(255, 176, 0, 0.15);
+      color: var(--accent);
+    }
+
+    .geo-result-item {
+      transition: all 0.2s;
+    }
+
+    @media (max-width: 480px) {
+      .create-profile-container {
+        margin: 10px auto;
+        padding: 15px;
+      }
+      .form-header h1 {
+        font-size: 1.2rem;
+      }
+      .photo-upload-container {
+        flex-direction: column;
+        text-align: center;
+      }
+      .photo-preview {
+        margin: 0 auto;
+      }
+      .filters-grid {
+        grid-template-columns: 1fr;
+      }
+      .form-footer {
+        flex-direction: column-reverse;
+      }
+      .form-footer .btn {
+        width: 100%;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+
+<body class="has-nav">
+  <nav>
+    <div class="nav-header">
+      <span class="nav-logo">SYSTEM</span>
+      <button id="menu-toggle" class="hamburger-btn">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div class="nav-links">
+      <a href="index.html">Feed</a>
+      <a href="map.html">Mapa</a>
+      <a href="explorer.html">Explorer</a>
+      <a href="storage-explorer.html">Storage</a>
+      <a href="chat-personal.html">Inbox</a>
+      <a href="chat.html">Global</a>
+      <a href="activity.html">Actividad</a>
+      <a href="export.html">Exportar</a>
+      <a href="profile.html">Perfil</a>
+    </div>
+  </nav>
+
+  <main class="container">
+    <div class="create-profile-container">
+      <header class="form-header">
+        <h1>_INICIALIZAR_PERFIL</h1>
+        <p class="helper-text">INGRESE SUS DATOS PARA COMENZAR EN LA RED</p>
+      </header>
+
+      <form class="profile-form" id="create-profile-form">
+        <!-- Identidad y Foto -->
+        <div class="form-section">
+          <h2 style="font-size: 14px; border-bottom: 1px solid var(--border); margin-bottom: 15px;">[ IDENTIDAD ]</h2>
+          <div class="photo-upload-container">
+            <div class="photo-preview" id="photo-preview">
+              <i data-lucide="user"></i>
+            </div>
+            <div style="flex: 1;">
+              <label>fotoPerfilUrl:</label>
+              <input type="text" id="fotoPerfilUrl" name="fotoPerfilUrl" placeholder="https://..." style="width: 100%; margin-bottom: 8px;">
+              <button type="button" class="btn-small">[ SUBIR_FOTO ]</button>
+            </div>
+          </div>
+
+          <div class="filters-grid" style="grid-template-columns: repeat(2, 1fr); margin-top: 15px;">
+            <div class="filter-group">
+              <label>alias:</label>
+              <input type="text" id="alias" name="alias" placeholder="Claudia" required>
+            </div>
+            <div class="filter-group" style="max-width: 100px;">
+              <label>edad (18-99):</label>
+              <input type="number" id="edad" name="edad" min="18" max="99" placeholder="52" style="width: 100%;">
+            </div>
+            <div class="filter-group" style="grid-column: span 2; margin-top: 10px;">
+              <label>busqueda:</label>
+              <textarea id="busqueda" name="busqueda" class="textarea-retro" maxlength="500" placeholder="¿Qué estás buscando? (Ej: Conocer gente nueva, amistades...)"></textarea>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 4px;">
+                <span class="helper-text" style="font-size: 9px; opacity: 0.7;">* MÁXIMO 500 CARACTERES PERMITIDOS.</span>
+                <span id="busqueda-counter" style="font-size: 10px; color: var(--secondary);">0 / 500</span>
+              </div>
+            </div>
+            <div class="filter-group" style="grid-column: span 2;">
+              <label>instagram / username:</label>
+              <input type="text" id="link" name="link" placeholder="@claudia_v">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h2 style="font-size: 14px; border-bottom: 1px solid var(--border); margin-bottom: 15px; margin-top: 25px;">[ PREFERENCIAS_Y_FILTROS ]</h2>
+          <div class="filters-grid">
+            <div class="filter-group">
+              <label>orientacion:</label>
+              <input type="text" id="orientacion" name="orientacion" placeholder="Lesbiana">
+            </div>
+          </div>
+          <div class="filters-grid" style="margin-top: 10px;">
+            <div class="filter-group">
+              <label>ageFilterMin:</label>
+              <input type="number" id="ageFilterMin" name="ageFilterMin" value="45">
+            </div>
+            <div class="filter-group">
+              <label>ageFilterMax:</label>
+              <input type="number" id="ageFilterMax" name="ageFilterMax" value="999">
+            </div>
+          </div>
+        </div>
+
+        <!-- Detalles Personales -->
+        <div class="form-section">
+          <h2 style="font-size: 14px; border-bottom: 1px solid var(--border); margin-bottom: 15px; margin-top: 25px;">[ DETALLES_PERSONALES ]</h2>
+          <div class="filter-group">
+            <label>animales:</label>
+            <input type="text" id="animales" name="animales" placeholder="Perros y gatos">
+          </div>
+          <div class="filter-group" style="margin-top: 10px;">
+            <label>salud:</label>
+            <input type="text" id="salud" name="salud" placeholder="Estoy bien">
+          </div>
+          <div class="filter-group" style="margin-top: 10px;">
+            <label>soledad:</label>
+            <input type="text" id="soledad" name="soledad" placeholder="La verdad que no tengo problema">
+          </div>
+          <div class="filter-group" style="margin-top: 10px;">
+            <label>torta:</label>
+            <input type="text" id="torta" name="torta" placeholder="Vainilla">
+          </div>
+        </div>
+
+        <!-- Ubicación -->
+        <div class="form-section">
+          <h2 style="font-size: 14px; border-bottom: 1px solid var(--border); margin-bottom: 15px; margin-top: 25px;">[ UBICACIÓN ]</h2>
+          
+          <!-- Búsqueda Rápida -->
+          <div class="location-search-box" style="margin-bottom: 20px;">
+            <label style="color: var(--accent); font-size: 10px; display: block; margin-bottom: 5px;">_BUSQUEDA_RAPIDA (API):</label>
+            <div style="display: flex; gap: 10px;">
+              <input type="text" id="geo-search-input" placeholder="Ej: Posadas, Misiones, Argentina" style="flex: 1;">
+              <button type="button" id="geo-search-btn" class="btn-small">[ BUSCAR ]</button>
+            </div>
+            <div id="geo-results" class="hidden" style="
+              background: var(--card); 
+              border: 1px solid var(--border); 
+              margin-top: 5px; 
+              max-height: 200px; 
+              overflow-y: auto;
+              font-size: 11px;
+            "></div>
+            <p class="helper-text" style="font-size: 9px; margin-top: 8px; opacity: 0.7;">
+              * LOS CAMPOS SE COMPLETARÁN AUTOMÁTICAMENTE AL SELECCIONAR UN RESULTADO.
+            </p>
+          </div>
+
+          <div class="filters-grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom: 10px;">
+            <div class="filter-group">
+              <label>pais:</label>
+              <input type="text" id="pais" name="pais" placeholder="Argentina" readonly style="opacity: 0.8; cursor: not-allowed;">
+            </div>
+            <div class="filter-group">
+              <label>provincia:</label>
+              <input type="text" id="provincia" name="provincia" placeholder="Misiones" readonly style="opacity: 0.8; cursor: not-allowed;">
+            </div>
+            <div class="filter-group">
+              <label>ciudad:</label>
+              <input type="text" id="ciudad" name="ciudad" placeholder="Posadas" readonly style="opacity: 0.8; cursor: not-allowed;">
+            </div>
+          </div>
+          <div class="filters-grid" style="grid-template-columns: repeat(2, 1fr);">
+            <div class="filter-group">
+              <label>departamento:</label>
+              <input type="text" id="departamento" name="departamento" placeholder="Capital" readonly style="opacity: 0.8; cursor: not-allowed;">
+            </div>
+            <div class="filter-group">
+              <label>barrio / columna:</label>
+              <input type="text" id="columna" name="columna" placeholder="Palermo" readonly style="opacity: 0.8; cursor: not-allowed;">
+            </div>
+          </div>
+        </div>
+
+        <!-- Configuraciones -->
+        <div class="form-section">
+          <h2 style="font-size: 14px; border-bottom: 1px solid var(--border); margin-bottom: 15px; margin-top: 25px;">[ CONFIGURACIÓN ]</h2>
+          <div class="filter-checkboxes">
+            <label class="checkbox-label">
+              <input type="checkbox" id="notifPreference" name="notifPreference" checked>
+              notifPreference
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" id="showOnlineStatus" name="showOnlineStatus" checked>
+              showOnlineStatus
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" id="tycAccepted" name="tycAccepted" checked required>
+              tycAccepted
+            </label>
+          </div>
+        </div>
+
+        <!-- Campos ocultos o de sistema (Información) -->
+        <p class="helper-text" style="margin-top: 20px; opacity: 0.6;">
+          [FIELDS: authUid, creadoEn, isOnline, lastSeen, likeCount, mensajesEnviados, fcmToken, platform] 
+          SE AUTOGENERARÁN AL GUARDAR.
+        </p>
+
+        <div class="form-footer">
+          <a href="profile.html" class="btn" style="border-color: var(--secondary); color: var(--secondary);">[ CANCELAR ]</a>
+          <button type="submit" class="btn">[ GUARDAR_PERFIL ]</button>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <script type="module" src="assets/js/page-transitions.js"></script>
+  <script type="module" src="assets/js/menu-toggle.js"></script>
+  <script type="module" src="assets/js/notifications.js"></script>
+  <script type="module">
+    import { geoManager } from './assets/js/geo-manager.js';
+    
+    // Lógica de búsqueda de ubicación
+    const searchInput = document.getElementById('geo-search-input');
+    const searchBtn = document.getElementById('geo-search-btn');
+    const resultsContainer = document.getElementById('geo-results');
+    
+    async function performSearch() {
+      const query = searchInput.value;
+      if (!query) return;
+      
+      searchBtn.innerText = '[ ... ]';
+      resultsContainer.innerHTML = '<div style="padding: 10px;">Buscando en satélites...</div>';
+      resultsContainer.classList.remove('hidden');
+      
+      const results = await geoManager.searchLocation(query);
+      
+      searchBtn.innerText = '[ BUSCAR ]';
+      
+      if (results.length === 0) {
+        resultsContainer.innerHTML = '<div style="padding: 10px;">No se encontraron coordenadas.</div>';
+        return;
+      }
+      
+      resultsContainer.innerHTML = results.map((r, i) => `
+        <div class="geo-result-item" data-index="${i}" style="
+          padding: 8px 12px; 
+          border-bottom: 1px solid rgba(255,176,0,0.2); 
+          cursor: pointer;
+          transition: background 0.2s;
+        ">
+          ${r.display_name}
+        </div>
+      `).join('');
+      
+      // Click en resultado
+      resultsContainer.querySelectorAll('.geo-result-item').forEach(item => {
+        item.addEventListener('hover', () => item.style.background = 'rgba(255,176,0,0.1)');
+        item.addEventListener('click', () => {
+          const res = results[item.dataset.index];
+          populateFields(res);
+          resultsContainer.classList.add('hidden');
+          searchInput.value = res.display_name;
+        });
+      });
+    }
+    
+    function populateFields(data) {
+      document.getElementById('pais').value = data.pais;
+      document.getElementById('provincia').value = data.provincia;
+      document.getElementById('ciudad').value = data.ciudad;
+      document.getElementById('departamento').value = data.departamento;
+      document.getElementById('columna').value = data.columna;
+      
+      // Guardar coords para el futuro (puedes agregarlas a un hidden field o variable global)
+      console.log('📍 Coordenadas detectadas:', data.coords);
+      
+      // Feedback visual
+      const h2 = document.querySelector('.form-section h2');
+      const originalText = h2.innerText;
+      h2.innerText = '[ UBICACIÓN_ACTUALIZADA ]';
+      h2.style.color = 'var(--accent)';
+      setTimeout(() => {
+        h2.innerText = originalText;
+        h2.style.color = '';
+      }, 2000);
+    }
+    
+    searchBtn.addEventListener('click', performSearch);
+    searchInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        performSearch();
+      }
+    });
+
+    // Cerrar resultados al hacer clic fuera
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.location-search-box')) {
+        resultsContainer.classList.add('hidden');
+      }
+    });
+
+    // Contador de caracteres para búsqueda
+    const busquedaTextarea = document.getElementById('busqueda');
+    const busquedaCounter = document.getElementById('busqueda-counter');
+    busquedaTextarea.addEventListener('input', () => {
+      const len = busquedaTextarea.value.length;
+      busquedaCounter.textContent = `${len} / 500`;
+      if (len >= 450) {
+        busquedaCounter.style.color = 'var(--error)';
+      } else {
+        busquedaCounter.style.color = 'var(--secondary)';
+      }
+    });
+  </script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    window.addEventListener('load', () => lucide.createIcons());
+  </script>
+</body>
+
+</html>
