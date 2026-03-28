@@ -96,30 +96,193 @@
       transition: all 0.2s;
     }
 
+    .avatar-selection-title {
+      font-size: 10px;
+      color: var(--accent);
+      margin-top: 15px;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+    }
+
+    .avatar-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+      gap: 10px;
+      margin-bottom: 20px;
+      padding: 10px;
+      background: rgba(255, 176, 0, 0.05);
+      border: 1px solid var(--secondary);
+    }
+
+    .avatar-item {
+      width: 60px;
+      height: 60px;
+      border: 2px solid var(--border);
+      cursor: pointer;
+      transition: all 0.2s;
+      object-fit: cover;
+      background: var(--card);
+    }
+
+    .avatar-item:hover {
+      border-color: var(--accent);
+      box-shadow: 0 0 10px var(--accent);
+      transform: scale(1.05);
+    }
+
+    .avatar-item.selected {
+      border-color: var(--accent);
+      box-shadow: 0 0 15px var(--accent);
+      outline: 1px solid var(--accent);
+    }
+
+    .select-retro {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 10px;
+      font-family: 'Courier New', monospace;
+      appearance: none;
+      background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23ffb000%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px top 50%;
+      background-size: 12px auto;
+      cursor: pointer;
+    }
+
+    .select-retro:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 10px rgba(255, 204, 0, 0.2);
+    }
+
+    .custom-checkbox {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 10px;
+      cursor: pointer;
+      padding: 4px;
+      transition: all 0.2s;
+      border: 1px solid transparent;
+    }
+
+    .custom-checkbox:hover {
+      background: rgba(255, 176, 0, 0.1);
+      color: var(--accent);
+      border-color: var(--secondary);
+    }
+
+    .custom-checkbox input[type="checkbox"] {
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+
     @media (max-width: 480px) {
       .create-profile-container {
         margin: 10px auto;
-        padding: 15px;
+        padding: 12px;
       }
+
       .form-header h1 {
-        font-size: 1.2rem;
+        font-size: 1.1rem;
       }
+
       .photo-upload-container {
         flex-direction: column;
         text-align: center;
+        padding: 10px;
+        gap: 15px;
       }
+
       .photo-preview {
         margin: 0 auto;
+        width: 120px;
+        height: 120px;
       }
+
+      /* Forzar cuadrículas a una sola columna */
       .filters-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr !important;
+        gap: 15px;
       }
+
+      .filter-group {
+        max-width: 100% !important;
+      }
+
+      .avatar-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        padding: 8px;
+      }
+
+      .avatar-item {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 1/1;
+      }
+
       .form-footer {
         flex-direction: column-reverse;
+        gap: 10px;
       }
+
       .form-footer .btn {
         width: 100%;
         text-align: center;
+        padding: 14px;
+      }
+
+      /* Ajustes para inputs en 320px */
+      input[type="text"],
+      input[type="number"],
+      textarea {
+        width: 100% !important;
+        font-size: 14px;
+      }
+
+      .location-search-box div {
+        flex-direction: column;
+      }
+
+      .location-search-box .btn-small {
+        width: 100%;
+        margin-top: 5px;
+        padding: 10px;
+      }
+    }
+
+    /* Grid Helpers */
+    .grid-2 {
+      display: grid !important;
+      grid-template-columns: repeat(2, 1fr) !important;
+      gap: 15px;
+    }
+
+    .grid-3 {
+      display: grid !important;
+      grid-template-columns: repeat(3, 1fr) !important;
+      gap: 15px;
+    }
+
+    .checkbox-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      background: rgba(255, 176, 0, 0.05);
+      padding: 10px;
+      border: 1px solid var(--secondary);
+    }
+
+    @media (max-width: 480px) {
+
+      .grid-2,
+      .grid-3,
+      .checkbox-grid {
+        grid-template-columns: 1fr !important;
+        gap: 10px;
       }
     }
   </style>
@@ -128,7 +291,7 @@
 <body class="has-nav">
   <nav>
     <div class="nav-header">
-      <span class="nav-logo">SYSTEM</span>
+      <span class="nav-logo">SYS</span>
       <button id="menu-toggle" class="hamburger-btn">
         <span></span>
         <span></span>
@@ -156,47 +319,74 @@
       </header>
 
       <form class="profile-form" id="create-profile-form">
-        <!-- Identidad y Foto -->
+        <!-- Datos Básicos -->
         <div class="form-section">
-          <h2 style="font-size: 14px; border-bottom: 1px solid var(--border); margin-bottom: 15px;">[ IDENTIDAD ]</h2>
+          <h2 style="font-size: 14px; border-bottom: 1px solid var(--border); margin-bottom: 15px;">[ DATOS_BASICOS ]
+          </h2>
+          <div class="grid-2">
+            <div class="filter-group">
+              <label>alias:</label>
+              <input type="text" id="alias" name="alias" placeholder="Claudia" required>
+            </div>
+            <div class="filter-group">
+              <label>edad (18-99):</label>
+              <input type="number" id="edad" name="edad" min="18" max="99" placeholder="52">
+            </div>
+          </div>
+        </div>
+
+        <!-- Identidad Visual -->
+        <div class="form-section" style="margin-top: 25px;">
+          <h2 style="font-size: 14px; border-bottom: 1px solid var(--border); margin-bottom: 15px;">[ IDENTIDAD_VISUAL ]
+          </h2>
           <div class="photo-upload-container">
             <div class="photo-preview" id="photo-preview">
               <i data-lucide="user"></i>
             </div>
             <div style="flex: 1;">
               <label>fotoPerfilUrl:</label>
-              <input type="text" id="fotoPerfilUrl" name="fotoPerfilUrl" placeholder="https://..." style="width: 100%; margin-bottom: 8px;">
-              <button type="button" class="btn-small">[ SUBIR_FOTO ]</button>
+              <input type="text" id="fotoPerfilUrl" name="fotoPerfilUrl" placeholder="https://..."
+                style="width: 100%; margin-bottom: 8px;">
             </div>
           </div>
 
-          <div class="filters-grid" style="grid-template-columns: repeat(2, 1fr); margin-top: 15px;">
-            <div class="filter-group">
-              <label>alias:</label>
-              <input type="text" id="alias" name="alias" placeholder="Claudia" required>
+          <div class="avatar-selection-title">[ SELECCIONAR_AVATAR_PREDEFINIDO ]</div>
+          <div class="avatar-grid" id="avatar-grid">
+            <img src="assets/img/avatar-01.png" class="avatar-item" data-url="assets/img/avatar-01.png" alt="Avatar 01">
+            <img src="assets/img/avatar-02.png" class="avatar-item" data-url="assets/img/avatar-02.png" alt="Avatar 02">
+            <img src="assets/img/avatar-03.png" class="avatar-item" data-url="assets/img/avatar-03.png" alt="Avatar 03">
+            <img src="assets/img/avatar-04.png" class="avatar-item" data-url="assets/img/avatar-04.png" alt="Avatar 04">
+            <img src="assets/img/avatar-05.png" class="avatar-item" data-url="assets/img/avatar-05.png" alt="Avatar 05">
+            <img src="assets/img/avatar-06.png" class="avatar-item" data-url="assets/img/avatar-06.png" alt="Avatar 06">
+            <img src="assets/img/avatar-07.png" class="avatar-item" data-url="assets/img/avatar-07.png" alt="Avatar 07">
+            <img src="assets/img/avatar-08.png" class="avatar-item" data-url="assets/img/avatar-08.png" alt="Avatar 08">
+            <img src="assets/img/avatar-09.png" class="avatar-item" data-url="assets/img/avatar-09.png" alt="Avatar 09">
+          </div>
+        </div>
+
+        <!-- Presentación y Redes -->
+        <div class="form-section" style="margin-top: 25px;">
+          <h2 style="font-size: 14px; border-bottom: 1px solid var(--border); margin-bottom: 15px;">[
+            PRESENTACION_Y_REDES ]</h2>
+          <div class="filter-group">
+            <label>busqueda:</label>
+            <textarea id="busqueda" name="busqueda" class="textarea-retro" maxlength="500"
+              placeholder="¿Qué estás buscando? (Ej: Conocer gente nueva, amistades...)"></textarea>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 4px;">
+              <span class="helper-text" style="font-size: 9px; opacity: 0.7;">* MÁXIMO 500 CARACTERES PERMITIDOS.</span>
+              <span id="busqueda-counter" style="font-size: 10px; color: var(--secondary);">0 / 500</span>
             </div>
-            <div class="filter-group" style="max-width: 100px;">
-              <label>edad (18-99):</label>
-              <input type="number" id="edad" name="edad" min="18" max="99" placeholder="52" style="width: 100%;">
-            </div>
-            <div class="filter-group" style="grid-column: span 2; margin-top: 10px;">
-              <label>busqueda:</label>
-              <textarea id="busqueda" name="busqueda" class="textarea-retro" maxlength="500" placeholder="¿Qué estás buscando? (Ej: Conocer gente nueva, amistades...)"></textarea>
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 4px;">
-                <span class="helper-text" style="font-size: 9px; opacity: 0.7;">* MÁXIMO 500 CARACTERES PERMITIDOS.</span>
-                <span id="busqueda-counter" style="font-size: 10px; color: var(--secondary);">0 / 500</span>
-              </div>
-            </div>
-            <div class="filter-group" style="grid-column: span 2;">
-              <label>instagram / username:</label>
-              <input type="text" id="link" name="link" placeholder="@claudia_v">
-            </div>
+          </div>
+          <div class="filter-group" style="margin-top: 15px;">
+            <label>instagram / username:</label>
+            <input type="text" id="link" name="link" placeholder="@claudia_v">
           </div>
         </div>
 
         <div class="form-section">
-          <h2 style="font-size: 14px; border-bottom: 1px solid var(--border); margin-bottom: 15px; margin-top: 25px;">[ PREFERENCIAS_Y_FILTROS ]</h2>
-          <div class="filters-grid">
+          <h2 style="font-size: 14px; border-bottom: 1px solid var(--border); margin-bottom: 15px; margin-top: 25px;">[
+            PREFERENCIAS_Y_FILTROS ]</h2>
+          <div class="grid-2">
             <div class="filter-group">
               <label>orientacion:</label>
               <input type="text" id="orientacion" name="orientacion" placeholder="Lesbiana">
@@ -205,43 +395,97 @@
           <div class="filters-grid" style="margin-top: 10px;">
             <div class="filter-group">
               <label>ageFilterMin:</label>
-              <input type="number" id="ageFilterMin" name="ageFilterMin" value="45">
+              <input type="number" id="ageFilterMin" name="ageFilterMin" value="18" readonly
+                style="opacity: 0.8; cursor: not-allowed;">
             </div>
             <div class="filter-group">
               <label>ageFilterMax:</label>
-              <input type="number" id="ageFilterMax" name="ageFilterMax" value="999">
+              <input type="number" id="ageFilterMax" name="ageFilterMax" value="99" readonly
+                style="opacity: 0.8; cursor: not-allowed;">
             </div>
           </div>
+          <p class="helper-text" style="font-size: 9px; margin-top: 8px; opacity: 0.7;">
+            * LOS FILTROS DE EDAD ESTÁN DESHABILITADOS POR DEFECTO (18-99).
+          </p>
         </div>
 
         <!-- Detalles Personales -->
         <div class="form-section">
-          <h2 style="font-size: 14px; border-bottom: 1px solid var(--border); margin-bottom: 15px; margin-top: 25px;">[ DETALLES_PERSONALES ]</h2>
+          <h2 style="font-size: 14px; border-bottom: 1px solid var(--border); margin-bottom: 15px; margin-top: 25px;">[
+            DETALLES_PERSONALES ]</h2>
+
+          <!-- ANIMALES (Multi-choice) -->
           <div class="filter-group">
             <label>animales:</label>
-            <input type="text" id="animales" name="animales" placeholder="Perros y gatos">
+            <div class="checkbox-grid">
+              <label class="custom-checkbox">
+                <input type="checkbox" name="animales" value="Michis"> [ MICHIS 🐱 ]
+              </label>
+              <label class="custom-checkbox">
+                <input type="checkbox" name="animales" value="Perris"> [ PERRIS 🐶 ]
+              </label>
+              <label class="custom-checkbox">
+                <input type="checkbox" name="animales" value="Gallinitas"> [ GALLINITAS 🐔 ]
+              </label>
+              <label class="custom-checkbox">
+                <input type="checkbox" name="animales" value="Patos"> [ PATOS 🦆 ]
+              </label>
+              <label class="custom-checkbox">
+                <input type="checkbox" name="animales" value="Conejos"> [ CONEJOS 🐰 ]
+              </label>
+              <label class="custom-checkbox">
+                <input type="checkbox" name="animales" value="Otros"> [ OTROS ]
+              </label>
+            </div>
           </div>
-          <div class="filter-group" style="margin-top: 10px;">
+
+          <!-- SALUD (Single-choice) -->
+          <div class="filter-group" style="margin-top: 15px;">
             <label>salud:</label>
-            <input type="text" id="salud" name="salud" placeholder="Estoy bien">
+            <select id="salud" name="salud" class="select-retro">
+              <option value="" disabled selected>-- SELECCIONAR_NIVEL --</option>
+              <option value="Excelente">[ EXCELENTE ]</option>
+              <option value="Estable">[ ESTABLE ]</option>
+              <option value="En tratamiento">[ EN_TRATAMIENTO ]</option>
+              <option value="Reservado">[ RESERVADO ]</option>
+            </select>
           </div>
-          <div class="filter-group" style="margin-top: 10px;">
+
+          <!-- SOLEDAD (Single-choice Phrases) -->
+          <div class="filter-group" style="margin-top: 15px;">
             <label>soledad:</label>
-            <input type="text" id="soledad" name="soledad" placeholder="La verdad que no tengo problema">
+            <select id="soledad" name="soledad" class="select-retro">
+              <option value="" disabled selected>-- SELECCIONAR_AVANZADO --</option>
+              <option value="Disfruto mi tiempo a solas">[ DISFRUTO_MI_TIEMPO_A_SOLAS ]</option>
+              <option value="Busco compañía constante">[ BUSCO_COMPAÑIA_CONSTANTE ]</option>
+              <option value="Depende del día">[ DEPENDE_DEL_DIA ]</option>
+              <option value="Abierta a nuevas conexiones">[ ABIERTA_A_NUEVAS_CONEXIONES ]</option>
+            </select>
           </div>
-          <div class="filter-group" style="margin-top: 10px;">
+
+          <!-- TORTA (Single-choice) -->
+          <div class="filter-group" style="margin-top: 15px;">
             <label>torta:</label>
-            <input type="text" id="torta" name="torta" placeholder="Vainilla">
+            <select id="torta" name="torta" class="select-retro">
+              <option value="" disabled selected>-- SELECCIONAR_SABOR --</option>
+              <option value="Vainilla">[ VAINILLA ]</option>
+              <option value="Chocolate">[ CHOCOLATE ]</option>
+              <option value="Frutilla">[ FRUTILLA ]</option>
+              <option value="Mixta">[ MIXTA ]</option>
+              <option value="Red Velvet">[ RED_VELVET ]</option>
+            </select>
           </div>
         </div>
 
         <!-- Ubicación -->
         <div class="form-section">
-          <h2 style="font-size: 14px; border-bottom: 1px solid var(--border); margin-bottom: 15px; margin-top: 25px;">[ UBICACIÓN ]</h2>
-          
+          <h2 style="font-size: 14px; border-bottom: 1px solid var(--border); margin-bottom: 15px; margin-top: 25px;">[
+            UBICACIÓN ]</h2>
+
           <!-- Búsqueda Rápida -->
           <div class="location-search-box" style="margin-bottom: 20px;">
-            <label style="color: var(--accent); font-size: 10px; display: block; margin-bottom: 5px;">_BUSQUEDA_RAPIDA (API):</label>
+            <label style="color: var(--accent); font-size: 10px; display: block; margin-bottom: 5px;">_BUSQUEDA_RAPIDA
+              (API):</label>
             <div style="display: flex; gap: 10px;">
               <input type="text" id="geo-search-input" placeholder="Ej: Posadas, Misiones, Argentina" style="flex: 1;">
               <button type="button" id="geo-search-btn" class="btn-small">[ BUSCAR ]</button>
@@ -259,59 +503,41 @@
             </p>
           </div>
 
-          <div class="filters-grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom: 10px;">
+          <div class="grid-3" style="margin-bottom: 10px;">
             <div class="filter-group">
               <label>pais:</label>
-              <input type="text" id="pais" name="pais" placeholder="Argentina" readonly style="opacity: 0.8; cursor: not-allowed;">
+              <input type="text" id="pais" name="pais" placeholder="Argentina" readonly
+                style="opacity: 0.8; cursor: not-allowed;">
             </div>
             <div class="filter-group">
               <label>provincia:</label>
-              <input type="text" id="provincia" name="provincia" placeholder="Misiones" readonly style="opacity: 0.8; cursor: not-allowed;">
+              <input type="text" id="provincia" name="provincia" placeholder="Misiones" readonly
+                style="opacity: 0.8; cursor: not-allowed;">
             </div>
             <div class="filter-group">
               <label>ciudad:</label>
-              <input type="text" id="ciudad" name="ciudad" placeholder="Posadas" readonly style="opacity: 0.8; cursor: not-allowed;">
+              <input type="text" id="ciudad" name="ciudad" placeholder="Posadas" readonly
+                style="opacity: 0.8; cursor: not-allowed;">
             </div>
           </div>
-          <div class="filters-grid" style="grid-template-columns: repeat(2, 1fr);">
+          <div class="grid-2">
             <div class="filter-group">
               <label>departamento:</label>
-              <input type="text" id="departamento" name="departamento" placeholder="Capital" readonly style="opacity: 0.8; cursor: not-allowed;">
+              <input type="text" id="departamento" name="departamento" placeholder="Capital" readonly
+                style="opacity: 0.8; cursor: not-allowed;">
             </div>
             <div class="filter-group">
               <label>barrio / columna:</label>
-              <input type="text" id="columna" name="columna" placeholder="Palermo" readonly style="opacity: 0.8; cursor: not-allowed;">
+              <input type="text" id="columna" name="columna" placeholder="Palermo" readonly
+                style="opacity: 0.8; cursor: not-allowed;">
             </div>
           </div>
         </div>
 
-        <!-- Configuraciones -->
-        <div class="form-section">
-          <h2 style="font-size: 14px; border-bottom: 1px solid var(--border); margin-bottom: 15px; margin-top: 25px;">[ CONFIGURACIÓN ]</h2>
-          <div class="filter-checkboxes">
-            <label class="checkbox-label">
-              <input type="checkbox" id="notifPreference" name="notifPreference" checked>
-              notifPreference
-            </label>
-            <label class="checkbox-label">
-              <input type="checkbox" id="showOnlineStatus" name="showOnlineStatus" checked>
-              showOnlineStatus
-            </label>
-            <label class="checkbox-label">
-              <input type="checkbox" id="tycAccepted" name="tycAccepted" checked required>
-              tycAccepted
-            </label>
-          </div>
-        </div>
-
-        <!-- Campos ocultos o de sistema (Información) -->
-        <p class="helper-text" style="margin-top: 20px; opacity: 0.6;">
-          [FIELDS: authUid, creadoEn, isOnline, lastSeen, likeCount, mensajesEnviados, fcmToken, platform] 
-          SE AUTOGENERARÁN AL GUARDAR.
-        </p>
 
         <div class="form-footer">
-          <a href="profile.html" class="btn" style="border-color: var(--secondary); color: var(--secondary);">[ CANCELAR ]</a>
+          <a href="profile.html" class="btn" style="border-color: var(--secondary); color: var(--secondary);">[ CANCELAR
+            ]</a>
           <button type="submit" class="btn">[ GUARDAR_PERFIL ]</button>
         </div>
       </form>
@@ -323,29 +549,29 @@
   <script type="module" src="assets/js/notifications.js"></script>
   <script type="module">
     import { geoManager } from './assets/js/geo-manager.js';
-    
+
     // Lógica de búsqueda de ubicación
     const searchInput = document.getElementById('geo-search-input');
     const searchBtn = document.getElementById('geo-search-btn');
     const resultsContainer = document.getElementById('geo-results');
-    
+
     async function performSearch() {
       const query = searchInput.value;
       if (!query) return;
-      
+
       searchBtn.innerText = '[ ... ]';
       resultsContainer.innerHTML = '<div style="padding: 10px;">Buscando en satélites...</div>';
       resultsContainer.classList.remove('hidden');
-      
+
       const results = await geoManager.searchLocation(query);
-      
+
       searchBtn.innerText = '[ BUSCAR ]';
-      
+
       if (results.length === 0) {
         resultsContainer.innerHTML = '<div style="padding: 10px;">No se encontraron coordenadas.</div>';
         return;
       }
-      
+
       resultsContainer.innerHTML = results.map((r, i) => `
         <div class="geo-result-item" data-index="${i}" style="
           padding: 8px 12px; 
@@ -356,7 +582,7 @@
           ${r.display_name}
         </div>
       `).join('');
-      
+
       // Click en resultado
       resultsContainer.querySelectorAll('.geo-result-item').forEach(item => {
         item.addEventListener('hover', () => item.style.background = 'rgba(255,176,0,0.1)');
@@ -368,17 +594,17 @@
         });
       });
     }
-    
+
     function populateFields(data) {
       document.getElementById('pais').value = data.pais;
       document.getElementById('provincia').value = data.provincia;
       document.getElementById('ciudad').value = data.ciudad;
       document.getElementById('departamento').value = data.departamento;
       document.getElementById('columna').value = data.columna;
-      
+
       // Guardar coords para el futuro (puedes agregarlas a un hidden field o variable global)
       console.log('📍 Coordenadas detectadas:', data.coords);
-      
+
       // Feedback visual
       const h2 = document.querySelector('.form-section h2');
       const originalText = h2.innerText;
@@ -389,7 +615,7 @@
         h2.style.color = '';
       }, 2000);
     }
-    
+
     searchBtn.addEventListener('click', performSearch);
     searchInput.addEventListener('keypress', (e) => {
       if (e.key === 'Enter') {
@@ -416,6 +642,38 @@
       } else {
         busquedaCounter.style.color = 'var(--secondary)';
       }
+    });
+
+    // Lógica para previsualización de foto y selección de avatar
+    const fotoUrlInput = document.getElementById('fotoPerfilUrl');
+    const photoPreview = document.getElementById('photo-preview');
+    const avatarItems = document.querySelectorAll('.avatar-item');
+
+    function updatePreview(url) {
+      if (url && url.trim() !== '') {
+        photoPreview.innerHTML = `<img src="${url}" style="width:100%; height:100%; object-fit:cover;" onerror="this.parentElement.innerHTML='<i data-lucide=\'user-x\' style=\'color:var(--error)\'></i>'; lucide.createIcons();">`;
+      } else {
+        photoPreview.innerHTML = '<i data-lucide="user"></i>';
+        lucide.createIcons();
+      }
+    }
+
+    fotoUrlInput.addEventListener('input', () => {
+      updatePreview(fotoUrlInput.value);
+      // Quitar selección si se escribe manualmente
+      avatarItems.forEach(item => item.classList.remove('selected'));
+    });
+
+    avatarItems.forEach(item => {
+      item.addEventListener('click', () => {
+        const url = item.getAttribute('data-url');
+        fotoUrlInput.value = url;
+        updatePreview(url);
+
+        // Resaltar selección
+        avatarItems.forEach(i => i.classList.remove('selected'));
+        item.classList.add('selected');
+      });
     });
   </script>
   <script src="https://unpkg.com/lucide@latest"></script>

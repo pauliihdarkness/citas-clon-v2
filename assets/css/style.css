@@ -25,6 +25,7 @@ body {
   padding-top: 72px;
   line-height: 1.4;
   position: relative;
+  overflow-x: hidden; /* Prevent horizontal scroll */
 }
 
 body::after {
