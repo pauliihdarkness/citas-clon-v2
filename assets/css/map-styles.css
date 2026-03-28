@@ -149,16 +149,153 @@ body.map-page nav {
 
 /* Leaflet Overrides */
 .leaflet-popup-content-wrapper {
-  background: var(--card, #0d0208) !important;
+  background: rgba(13, 2, 8, 0.9) !important;
   color: var(--text, #ffb000) !important;
   border: 1px solid var(--border, #ffb000) !important;
-  border-radius: 4px !important;
-  box-shadow: 0 0 20px rgba(255, 176, 0, 0.2) !important;
+  border-radius: 2px !important;
+  box-shadow: 0 0 25px rgba(255, 176, 0, 0.25), inset 0 0 15px rgba(255, 176, 0, 0.05) !important;
+  backdrop-filter: blur(10px);
+  padding: 0 !important;
+  overflow: hidden;
+}
+
+.leaflet-popup-content {
+  margin: 0 !important;
+  width: 280px !important;
 }
 
 .leaflet-popup-tip {
   background: var(--card, #0d0208) !important;
   border: 1px solid var(--border, #ffb000) !important;
+}
+
+.leaflet-popup-close-button {
+  color: var(--accent, #ffcc00) !important;
+  padding: 8px !important;
+}
+
+/* User Popup Card Aesthetic */
+.user-popup-card {
+  display: flex;
+  flex-direction: column;
+  font-family: 'Share Tech Mono', monospace;
+}
+
+.popup-header {
+  display: flex;
+  gap: 12px;
+  padding: 12px;
+  background: rgba(255, 176, 0, 0.05);
+  border-bottom: 1px solid rgba(255, 176, 0, 0.2);
+  align-items: center;
+}
+
+.popup-avatar-wrapper {
+  width: 50px;
+  height: 50px;
+  border: 1px solid var(--accent);
+  background: #000;
+  flex-shrink: 0;
+  overflow: hidden;
+  box-shadow: 0 0 8px rgba(255, 204, 0, 0.3);
+}
+
+.popup-avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  image-rendering: pixelated;
+  filter: sepia(1) saturate(3) hue-rotate(-15deg);
+}
+
+.popup-title {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.popup-title h3 {
+  margin: 0;
+  font-size: 14px;
+  color: var(--accent);
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-shadow: 0 0 5px var(--accent);
+}
+
+.popup-subtitle {
+  font-size: 10px;
+  color: var(--secondary);
+  text-transform: uppercase;
+}
+
+.popup-body {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.popup-info-row {
+  display: flex;
+  gap: 8px;
+  font-size: 10px;
+  align-items: flex-start;
+}
+
+.popup-info-icon {
+  color: var(--accent);
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.popup-info-text {
+  color: var(--text);
+  line-height: 1.2;
+}
+
+.popup-bio {
+  font-size: 11px;
+  font-style: italic;
+  color: var(--secondary);
+  border-left: 2px solid var(--accent);
+  padding-left: 8px;
+  margin-top: 4px;
+  max-height: 48px;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.popup-footer {
+  padding: 8px 12px 12px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn-retro-popup {
+  background: transparent;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  padding: 6px 12px;
+  font-size: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s;
+  text-transform: uppercase;
+}
+
+.btn-retro-popup:hover {
+  background: var(--accent);
+  color: #000;
+  box-shadow: 0 0 10px var(--accent);
 }
 
 /* Markers */

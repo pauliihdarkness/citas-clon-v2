@@ -149,13 +149,45 @@ class NotificationManager {
         if (window.lucide) lucide.createIcons();
     }
 
+    // Método para mostrar notificaciones genéricas (éxito, error, info)
+    show(message, type = 'info') {
+        this.createContainer();
+        if (!this.container) return;
+
+        const notification = document.createElement('div');
+        notification.className = `retro-notification ${type}`;
+        
+        const title = type === 'success' ? 'SISTEMA: ÉXITO' : 
+                      type === 'error' ? 'SISTEMA: ERROR' : 'SISTEMA: INFO';
+
+        notification.innerHTML = `
+            <div class="notification-header">
+                <span class="notification-title">${title}</span>
+                <button class="notification-close">×</button>
+            </div>
+            <div class="notification-body">
+                <span class="notification-message">${this.escapeHtml(message)}</span>
+            </div>
+        `;
+
+        notification.onclick = (e) => {
+            if (e.target.className === 'notification-close') {
+                this.removeNotification(notification);
+            }
+        };
+
+        // Auto remove after 5 seconds
+        setTimeout(() => {
+            this.removeNotification(notification);
+        }, 5000);
+
+        this.container.appendChild(notification);
+        if (window.lucide) lucide.createIcons();
+    }
+
     // Método para probar la UI desde la consola: notificationManager.testNotification()
     testNotification() {
-        this.showNotification({
-            ultimoRemitente: 'SISTEMA',
-            ultimoMensaje: 'Este es un mensaje de prueba para verificar la UI.',
-            participantes: ['SISTEMA', this.currentUserAlias || 'Usuario']
-        }, 'test-conv-id');
+        this.show('Esta es una notificación de prueba del sistema.', 'success');
         
         // Probar badge global
         const currentBadge = document.querySelector('.nav-badge');

@@ -28,24 +28,100 @@
       <a href="chat-personal.html" class="nav-btn-inbox">Inbox</a>
       <a href="chat.html" class="nav-btn-chat">Global</a>
       <a href="activity.html" class="nav-btn-activity">Actividad</a>
-      <a href="export.html" class="nav-btn-export">Exportar</a>
       <a href="profile.html" class="nav-btn-profile nav-active">Perfil</a>
     </div>
   </nav>
 
   <main class="container">
     <section class="profile-section">
-      <h1>Mi Perfil</h1>
+      <div id="profile-capture-area" style="background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 4px;">
+        <div id="profile-content" class="profile-card">
+          <p class="loading">Cargando perfil...</p>
+        </div>
 
-      <div id="profile-content" class="profile-card">
-        <p class="loading">Cargando perfil...</p>
+      </div>
+ 
+      <!-- PANEL DE CONFIGURACIÓN -->
+      <div id="settings-panel" class="settings-panel">
+        <header class="settings-header">
+          <i data-lucide="settings" style="width:16px; height:16px; color: var(--accent);"></i>
+          <h3>[ AJUSTES_DEL_SISTEMA ]</h3>
+        </header>
+        
+        <div class="settings-group">
+          <!-- PRIVACIDAD -->
+          <div class="setting-item">
+            <div class="setting-info">
+              <span class="setting-label">Modo Incógnito</span>
+              <span class="setting-desc">Ocultar mi ubicación del mapa global</span>
+            </div>
+            <label class="retro-switch">
+              <input type="checkbox" id="setting-incognito">
+              <span class="slider"></span>
+            </label>
+          </div>
+ 
+          <div class="setting-item">
+            <div class="setting-info">
+              <span class="setting-label">Estado Online</span>
+              <span class="setting-desc">Mostrar cuándo estoy activo</span>
+            </div>
+            <label class="retro-switch">
+              <input type="checkbox" id="setting-show-online" checked>
+              <span class="slider"></span>
+            </label>
+          </div>
+ 
+          <!-- INTERFAZ -->
+          <div style="border-top: 1px dashed rgba(255,176,0,0.1); margin: 8px 0; padding-top: 8px;">
+            <p style="font-size: 9px; color: var(--accent); margin-bottom: 8px;">// INTERFAZ_Y_VISUALES</p>
+          </div>
+ 
+          <div class="setting-item">
+            <div class="setting-info">
+              <span class="setting-label">Efecto CRT (Scanlines)</span>
+              <span class="setting-desc">Activar líneas de escaneo decorativas</span>
+            </div>
+            <label class="retro-switch">
+              <input type="checkbox" id="setting-scanlines" checked>
+              <span class="slider"></span>
+            </label>
+          </div>
+ 
+          <div class="setting-item">
+            <div class="setting-info">
+              <span class="setting-label">Efectos de Sonido</span>
+              <span class="setting-desc">Sonidos de terminal al interactuar</span>
+            </div>
+            <label class="retro-switch">
+              <input type="checkbox" id="setting-sounds">
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
       </div>
 
-      <div class="profile-actions">
-        <button id="logout-btn" class="btn logout">Cerrar Sesión</button>
+          <div class="setting-item" style="border-top: 1px dashed rgba(255,176,0,0.1); margin-top: 12px; padding-top: 12px; border-bottom: none;">
+            <div class="setting-info">
+              <span class="setting-label" style="color: #ff3e3e;">Seguridad de la Cuenta</span>
+              <span class="setting-desc">Cerrar sesión en este dispositivo</span>
+            </div>
+            <button id="logout-btn-config" class="btn logout" style="padding: 6px 12px; font-size: 10px; width: auto;">
+              [ SALIR ]
+            </button>
+          </div>
+        </div>
+      </div>
+ 
+      <div class="profile-actions" style="margin-top: 24px; display: grid; grid-template-columns: 1fr; gap: 15px;">
+        <a href="create-profile.html" class="btn" style="text-align: center; display: flex; align-items: center; justify-content: center; gap: 8px;">
+          <i data-lucide="edit-3"></i> [ EDITAR_PERFIL ]
+        </a>
       </div>
     </section>
   </main>
+
+  <script type="module" src="assets/js/page-transitions.js"></script>
 
   <script type="module" src="assets/js/page-transitions.js"></script>
   <script type="module" src="assets/js/menu-toggle.js"></script>

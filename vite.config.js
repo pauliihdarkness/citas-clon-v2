@@ -39,7 +39,17 @@ export default defineConfig({
   ],
   build: {
     outDir: 'dist',
-    sourcemap: true
+    sourcemap: true,
+    rollupOptions: {
+      input: Object.fromEntries(
+        fs.readdirSync(__dirname)
+          .filter(file => file.endsWith('.html'))
+          .map(file => [
+            path.basename(file, path.extname(file)),
+            path.resolve(__dirname, file)
+          ])
+      )
+    }
   },
   define: {
     __VITE_APP_ENV__: JSON.stringify(process.env.VITE_APP_ENV || 'development')

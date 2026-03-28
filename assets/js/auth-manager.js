@@ -16,13 +16,14 @@
  * const user = authManager.getUser();
  */
 
-import { auth, onAuthStateChanged, signOut as firebaseSignOut } from './firebase-config.js';
+import { auth, db, doc, getDoc, onAuthStateChanged, signOut as firebaseSignOut } from './firebase-config.js';
 
 class AuthManager {
   constructor() {
     this.currentUser = null;
     this.listeners = new Set();
     this.initialized = false;
+    this._hasProfileCache = null; // Cache para evitar múltiples lecturas por sesión
     this.ready = this.initializeAuth();
   }
 
@@ -112,12 +113,46 @@ class AuthManager {
   }
 
   /**
+   * Verifica si el usuario actual tiene un perfil creado en Firestore
+   * @returns {Promise<boolean>}
+   */
+  async checkProfile() {
+    await this.ready;
+    if (!this.currentUser) return false;
+
+    // Si ya sabemos que tiene perfil, no leer Firestore de nuevo
+    if (this._hasProfileCache === true) return true;
+
+    try {
+      console.log(`[AUTH] Verificando perfil para: ${this.currentUser.uid}`);
+      const docRef = doc(db, 'users', this.currentUser.uid);
+      const docSnap = await getDoc(docRef);
+
+      const exists = docSnap.exists();
+      this._hasProfileCache = exists;
+      
+      if (exists) {
+        console.log('[AUTH] ✓ Perfil confirmado en Firestore');
+      } else {
+        console.warn('[AUTH] ⚠ El usuario no tiene perfil registrado');
+      }
+
+      return exists;
+    } catch (e) {
+      console.error('[AUTH] Error verificando perfil:', e);
+      return false; // Por seguridad, asumimos que no tiene o que hubo error
+    }
+  }
+
+  /**
    * Cerrar sesión
    */
   async logout() {
     try {
       await firebaseSignOut(auth);
-      console.log('[AUTH] ✓ Sesión cerrada');
+      // Limpiar datos persistidos localmente
+      localStorage.removeItem('alias');
+      console.log('[AUTH] ✓ Sesión cerrada y localStorage limpiado');
     } catch (e) {
       console.error('[AUTH] Error cerrando sesión:', e);
       throw e;

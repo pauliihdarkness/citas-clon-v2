@@ -12,14 +12,45 @@ export function escapeHtml(text) {
 }
 
 /**
- * Formatea un Firestore Timestamp a hora legible
+ * Convierte cualquier tipo de timestamp (Firestore, Objeto, Fecha, String) a un objeto Date de JS
+ */
+export function ensureDate(timestamp) {
+  if (!timestamp) return null;
+  
+  // 1. Ya es un objeto Date
+  if (timestamp instanceof Date) return timestamp;
+  
+  // 2. Es un Timestamp de Firestore (tiene .toDate())
+  if (typeof timestamp.toDate === 'function') return timestamp.toDate();
+  
+  // 3. Es un objeto serializado de Firestore {seconds, nanoseconds}
+  if (timestamp.seconds !== undefined && timestamp.nanoseconds !== undefined) {
+    return new Date(timestamp.seconds * 1000 + (timestamp.nanoseconds / 1000000));
+  }
+  
+  // 4. Es solo segundos (común en algunas implementaciones manuales)
+  if (typeof timestamp === 'number' && timestamp < 10000000000) {
+    return new Date(timestamp * 1000);
+  }
+  
+  // 5. Fallback final (Milisegundos o String ISO)
+  const date = new Date(timestamp);
+  return isNaN(date.getTime()) ? null : date;
+}
+
+/**
+ * Formatea un timestamp a hora legible
  */
 export function formatTime(timestamp) {
-  if (!timestamp) return '';
+  const date = ensureDate(timestamp);
+  if (!date) return '';
 
   try {
-    const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
-    return date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+    return date.toLocaleTimeString('es-ES', { 
+      hour: '2-digit', 
+      minute: '2-digit',
+      hour12: false 
+    });
   } catch (e) {
     return '';
   }
@@ -29,18 +60,20 @@ export function formatTime(timestamp) {
  * Formatea una fecha relativa (ej: "hace 2 minutos")
  */
 export function formatRelativeTime(timestamp) {
-  if (!timestamp) return '';
+  const date = ensureDate(timestamp);
+  if (!date) return '';
 
   try {
-    const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
     const now = new Date();
     const diff = now - date;
 
+    const seconds = Math.floor(diff / 1000);
     const minutes = Math.floor(diff / 60000);
     const hours = Math.floor(diff / 3600000);
     const days = Math.floor(diff / 86400000);
 
-    if (minutes < 1) return 'Justo ahora';
+    if (seconds < 30) return 'Justo ahora';
+    if (minutes < 1) return 'Hace instantes';
     if (minutes < 60) return `Hace ${minutes}m`;
     if (hours < 24) return `Hace ${hours}h`;
     if (days < 7) return `Hace ${days}d`;

@@ -32,14 +32,22 @@ export const geoManager = {
   normalizeResult(item) {
     const addr = item.address || {};
     
-    // Mapeo inteligente de campos
+    // Mapeo inteligente de campos para esquema del proyecto
+    // Para grandes ciudades como CABA:
+    // city -> Ciudad
+    // city_district -> Departamento (Comuna)
+    // suburb/neighbourhood -> Columna (Barrio)
+    
     return {
       display_name: item.display_name,
-      ciudad: addr.city || addr.town || addr.village || addr.city_district || addr.locality || '',
+      // Priorizar el Barrio/Localidad específica como "Ciudad" para mayor precisión visual
+      ciudad: addr.suburb || addr.neighbourhood || addr.city || addr.town || addr.village || addr.locality || '',
       provincia: addr.state || '',
       pais: addr.country || '',
-      departamento: addr.county || addr.state_district || addr.district || addr.municipality || '',
-      columna: addr.suburb || addr.neighbourhood || addr.quarter || '',
+      // El Departamento/Comuna ahora se guarda consistentemente
+      departamento: addr.city_district || addr.county || addr.state_district || addr.district || '',
+      // Columna queda para detalles de zona menores
+      columna: addr.quarter || addr.city_block || addr.municipality || '',
       coords: [parseFloat(item.lat), parseFloat(item.lon)],
       importance: item.importance || 0
     };

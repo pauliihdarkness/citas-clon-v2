@@ -1,7 +1,8 @@
-import { db, auth, collection, query, where, orderBy, onSnapshot, addDoc, setDoc, doc, updateDoc, getDoc, getDocs, serverTimestamp } from './firebase-config.js';
+import { db, auth, collection, query, where, orderBy, limit, onSnapshot, addDoc, setDoc, doc, updateDoc, getDoc, getDocs, serverTimestamp } from './firebase-config.js';
 import { onAuthStateChanged } from './firebase-config.js';
 import { showToast, formatRelativeTime } from './utils.js';
 import { observeLazyImages, debounce, markTime, measureTime } from './performance-optimizer.js';
+import notifications from './notifications.js';
 import './activity-tracker.js'; // Rastreo automático de actividad
 
 markTime('chat-personal-start');
@@ -18,16 +19,22 @@ function getSafeImageUrl(url, alias) {
 }
 
 async function fetchUserData(alias) {
+    if (!alias) return null;
     if (userDataCache.has(alias)) return userDataCache.get(alias);
+    
     try {
-        const userDoc = await getDoc(doc(db, "users", alias));
-        if (userDoc.exists()) {
-            const data = userDoc.data();
+        // Buscar por el campo 'alias' ya que el ID de documento es el UID
+        const usersRef = collection(db, "users");
+        const q = query(usersRef, where("alias", "==", alias), limit(1));
+        const querySnapshot = await getDocs(q);
+        
+        if (!querySnapshot.empty) {
+            const data = querySnapshot.docs[0].data();
             userDataCache.set(alias, data);
             return data;
         }
     } catch (e) {
-        console.warn('No se pudo obtener datos del usuario:', alias, e);
+        console.warn('No se pudo obtener datos del usuario por alias:', alias, e);
     }
     return null;
 }
@@ -54,31 +61,45 @@ let unsubscribeMessages = null;
 // Inicialización
 onAuthStateChanged(auth, async (user) => {
     if (user) {
-        // Obtener alias desde localStorage
-        const alias = localStorage.getItem('alias');
+        try {
+            // 1. Obtener perfil del usuario por su UID (que es el ID del documento en Firestore)
+            const userDoc = await getDoc(doc(db, "users", user.uid));
+            
+            if (userDoc.exists()) {
+                const userData = userDoc.data();
+                const alias = userData.alias || localStorage.getItem('alias');
 
-        if (!alias) {
-            alert('No se encontró el alias en localStorage. Por favor, configúralo primero.');
-            return;
-        }
+                if (!alias) {
+                    notifications.show('⚠️ ALIAS_NO_CONFIGURADO: Por favor, ve a Perfil.', 'warning');
+                    // Redirigir a creación si no hay alias
+                    // window.location.href = 'create-profile.html';
+                    return;
+                }
 
-        // Buscar documento del usuario por alias
-        const userDoc = await getDoc(doc(db, "users", alias));
-        if (userDoc.exists()) {
-            currentUser = { uid: user.uid, alias: alias, ...userDoc.data() };
+                currentUser = { uid: user.uid, alias: alias, ...userData };
+                
+                // Asegurar que localStorage tenga el alias correcto
+                localStorage.setItem('alias', alias);
 
-            // Check for URL param
-            const params = new URLSearchParams(window.location.search);
-            const targetAlias = params.get('id');
+                console.log('✅ SESIÓN_CHAT_INICIALIZADA para:', alias);
 
-            if (targetAlias) {
-                await initiateChatWith(targetAlias);
+                // Check for URL param (chatear con alguien específico)
+                const params = new URLSearchParams(window.location.search);
+                const targetAlias = params.get('id');
+
+                if (targetAlias) {
+                    await initiateChatWith(targetAlias);
+                }
+
+                loadConversations();
+            } else {
+                console.warn("⚠️ No se encontró perfil en Firestore para UID:", user.uid);
+                alert('No tienes un perfil creado todavía. Por favor, crea uno.');
+                window.location.href = 'create-profile.html';
             }
-
-            loadConversations();
-        } else {
-            console.error("Usuario no encontrado en Firestore con alias:", alias);
-            alert(`No se encontró un usuario con el alias "${alias}" en la base de datos.`);
+        } catch (error) {
+            console.error('❌ Error inicializando chat:', error);
+            alert('Error de conexión con el sistema.');
         }
     } else {
         window.location.href = 'login.html';
@@ -87,6 +108,14 @@ onAuthStateChanged(auth, async (user) => {
 
 async function initiateChatWith(targetAlias) {
     if (targetAlias === currentUser.alias) return;
+
+    // Verificar si el destinatario existe en el sistema
+    const targetUser = await fetchUserData(targetAlias);
+    if (!targetUser) {
+        console.warn('⚠️ Intento de chat con alias inexistente:', targetAlias);
+        notifications.show('❌ El usuario no existe en la red SYS.', 'error');
+        return;
+    }
 
     // Check if conversation already exists
     // Format: alias1_alias2 (sorted)

@@ -1,6 +1,6 @@
 import { db, auth } from './firebase-config.js';
 import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
-import { getDoc, doc, collection, getDocs } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+import { getDoc, doc, collection, getDocs, query, where, limit } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 import { escapeHtml, formatTime, formatRelativeTime } from './utils.js';
 import { LOCATIONS_DATA } from './locations-data.js';
 
@@ -36,8 +36,19 @@ async function loadUserProfile(userId) {
   try {
     profileContent.innerHTML = '<p class="loading">Cargando perfil...</p>';
 
-    // Obtener datos de Firestore
-    const userDocSnap = await getDoc(doc(db, 'users', userId));
+    // 1. Intentar obtener por UID (ID de documento)
+    let userDocSnap = await getDoc(doc(db, 'users', userId));
+
+    // 2. Fallback: Si no existe como ID, buscar por el campo 'alias'
+    if (!userDocSnap.exists()) {
+      console.log('🔍 ID no encontrado como UID, buscando como ALIAS:', userId);
+      const q = query(collection(db, 'users'), where('alias', '==', userId), limit(1));
+      const qSnap = await getDocs(q);
+      
+      if (!qSnap.empty) {
+        userDocSnap = qSnap.docs[0];
+      }
+    }
 
     if (!userDocSnap.exists()) {
       profileContent.innerHTML = '<p class="error">Usuario no encontrado</p>';
@@ -47,11 +58,11 @@ async function loadUserProfile(userId) {
     const firestoreData = userDocSnap.data();
     console.log('Datos completos del usuario:', firestoreData);
 
-    renderUserProfile(firestoreData, userId);
-    setupButtons(firestoreData, userId);
+    renderUserProfile(firestoreData, userDocSnap.id);
+    setupButtons(firestoreData, userDocSnap.id);
     
     // Cargar y mostrar la subcolección de likes dados
-    fetchAndRenderLikesGiven(userId);
+    fetchAndRenderLikesGiven(userDocSnap.id);
 
     // Inicializar mini-mapa de ubicación
     initProfileMap(firestoreData);
@@ -156,7 +167,7 @@ function renderUserProfile(data, userId) {
   const excludedFields = new Set([
     'id', 'uid', 'creadoEn', 'fotoPerfilUrl', 'alias', 'nombre', 'ciudad',
     'provincia', 'pais', 'membresia', 'isOnline', 'lastSeen',
-    'biografia', 'descripcion', 'intereses', 'dniUrl', 'email', 'edad'
+    'biografia', 'descripcion', 'intereses', 'dniUrl', 'email', 'edad', 'link'
   ]);
 
   // Configuración de campos conocidos (Iconos y etiquetas)
@@ -177,10 +188,23 @@ function renderUserProfile(data, userId) {
     idiomas: { label: 'Idiomas', icon: 'languages' }
   };
 
-  const priorityOrder = [
-    'genero', 'orientacion', 'altura', 'signo', // Físico / Básico
-    'profesion', 'ocupacion', 'empresa', 'educacion', // Carrera
-    'relacion', 'hijos', 'fuma', 'bebe', 'idiomas' // Estilo de vida
+  // Configuración de grupos para jerarquía
+  const fieldGroups = [
+    {
+      title: 'Información de Usuario',
+      icon: 'user-check',
+      fields: ['genero', 'orientacion', 'signo', 'altura', 'peso']
+    },
+    {
+      title: 'Carrera y Formación',
+      icon: 'briefcase',
+      fields: ['profesion', 'ocupacion', 'empresa', 'educacion']
+    },
+    {
+      title: 'Estilo de Vida',
+      icon: 'activity',
+      fields: ['relacion', 'hijos', 'fuma', 'bebe', 'idiomas', 'animales', 'salud', 'soledad']
+    }
   ];
 
   let detailsHTML = `
@@ -193,6 +217,7 @@ function renderUserProfile(data, userId) {
         <p class="profile-status">${onlineStatus} ${membershipBadge}</p>
         ${lastSeenHTML}
         ${data.creadoEn ? `<p class="profile-created"><i data-lucide="calendar"></i> Miembro desde: ${new Date(data.creadoEn.seconds ? data.creadoEn.seconds * 1000 : data.creadoEn).toLocaleDateString('es-ES')} ${new Date(data.creadoEn.seconds ? data.creadoEn.seconds * 1000 : data.creadoEn).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}</p>` : ''}
+        ${data.link ? `<p class="profile-link"><i data-lucide="instagram"></i> Instagram: @${escapeHtml(data.link)}</p>` : ''}
       </div>
     </div>
 
@@ -242,7 +267,6 @@ function renderUserProfile(data, userId) {
       else displayValue = JSON.stringify(value);
     }
 
-    // Check boolean logic just in case
     if (typeof value === 'boolean') {
       if (!value) return '';
       displayValue = 'Sí';
@@ -256,17 +280,32 @@ function renderUserProfile(data, userId) {
     `;
   };
 
-  // 3. Campos Prioritarios Ordenados
-  priorityOrder.forEach(key => {
-    if (data[key] !== undefined && data[key] !== null && data[key] !== '') {
-      detailsHTML += renderRow(key, data[key]);
-      excludedFields.add(key); // Marcar como renderizado
+  // 3. Renderizar Grupos Jerárquicos
+  fieldGroups.forEach(group => {
+    // Verificar si el grupo tiene al menos un campo con valor
+    const hasData = group.fields.some(key => data[key] !== undefined && data[key] !== null && data[key] !== '');
+    
+    if (hasData) {
+      detailsHTML += `
+        <div class="profile-section-header">
+           <span class="section-indicator">></span> ${group.title}
+        </div>
+      `;
+      group.fields.forEach(key => {
+        if (data[key] !== undefined && data[key] !== null && data[key] !== '') {
+          detailsHTML += renderRow(key, data[key]);
+          excludedFields.add(key); // Marcar como renderizado
+        }
+      });
     }
   });
 
   // 4. Contacto (Email)
   if (data.email) {
     detailsHTML += `
+      <div class="profile-section-header">
+         <span class="section-indicator">></span> Contacto
+      </div>
       <div class="detail-row">
         <span class="detail-label"><i data-lucide="mail"></i> Email</span>
         <span class="detail-value">${escapeHtml(data.email)}</span>
@@ -285,6 +324,7 @@ function renderUserProfile(data, userId) {
   }
 
   // 6. Resto de campos (Dynamic Catch-all)
+  let otherFieldsHTML = '';
   Object.entries(data).forEach(([key, value]) => {
     // Saltamos lo que ya mostramos o excluimos
     if (excludedFields.has(key)) return;
@@ -295,8 +335,17 @@ function renderUserProfile(data, userId) {
     // No mostrar URLs de fotos grandes como texto
     if (key.includes('Url') && String(value).length > 50) return;
 
-    detailsHTML += renderRow(key, value);
+    otherFieldsHTML += renderRow(key, value);
   });
+
+  if (otherFieldsHTML) {
+    detailsHTML += `
+      <div class="profile-section-header">
+         <span class="section-indicator">></span> Otras Características
+      </div>
+      ${otherFieldsHTML}
+    `;
+  }
 
   detailsHTML += '</div>';
 
@@ -442,10 +491,10 @@ async function initProfileMap(viewedData) {
   }).addTo(profileMap);
 
   // --- Cálculo de distancia con el usuario logueado ---
-  const myAlias = localStorage.getItem('alias');
-  if (myAlias && myAlias !== viewedData.alias) {
+  if (currentUser) {
     try {
-      const myDocSnap = await getDoc(doc(db, 'users', myAlias));
+      // Usar currentUser.uid (ID real del documento) en lugar del alias
+      const myDocSnap = await getDoc(doc(db, 'users', currentUser.uid));
       if (myDocSnap.exists()) {
         const myData = myDocSnap.data();
         const myResult = resolveCoords(myData);

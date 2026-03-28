@@ -285,6 +285,54 @@
         gap: 10px;
       }
     }
+    @media (max-width: 480px) {
+      .create-profile-container {
+        margin: 10px;
+        padding: 15px;
+      }
+      
+      .form-header h1 {
+        font-size: 1.2rem;
+      }
+      
+      .photo-upload-container {
+        flex-direction: column;
+        text-align: center;
+      }
+      
+      .form-footer {
+        flex-direction: column-reverse;
+      }
+      
+      .form-footer .btn {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 320px) {
+      .create-profile-container {
+        padding: 10px;
+        margin: 5px;
+      }
+      
+      .photo-preview {
+        width: 80px;
+        height: 80px;
+      }
+      
+      .avatar-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 6px;
+      }
+      
+      label {
+        font-size: 10px;
+      }
+      
+      input, select, .textarea-retro {
+        font-size: 11px;
+      }
+    }
   </style>
 </head>
 
@@ -306,8 +354,7 @@
       <a href="chat-personal.html">Inbox</a>
       <a href="chat.html">Global</a>
       <a href="activity.html">Actividad</a>
-      <a href="export.html">Exportar</a>
-      <a href="profile.html">Perfil</a>
+      <a href="profile.html" class="nav-btn-profile">Perfil</a>
     </div>
   </nav>
 
@@ -352,15 +399,15 @@
 
           <div class="avatar-selection-title">[ SELECCIONAR_AVATAR_PREDEFINIDO ]</div>
           <div class="avatar-grid" id="avatar-grid">
-            <img src="assets/img/avatar-01.png" class="avatar-item" data-url="assets/img/avatar-01.png" alt="Avatar 01">
-            <img src="assets/img/avatar-02.png" class="avatar-item" data-url="assets/img/avatar-02.png" alt="Avatar 02">
-            <img src="assets/img/avatar-03.png" class="avatar-item" data-url="assets/img/avatar-03.png" alt="Avatar 03">
-            <img src="assets/img/avatar-04.png" class="avatar-item" data-url="assets/img/avatar-04.png" alt="Avatar 04">
-            <img src="assets/img/avatar-05.png" class="avatar-item" data-url="assets/img/avatar-05.png" alt="Avatar 05">
-            <img src="assets/img/avatar-06.png" class="avatar-item" data-url="assets/img/avatar-06.png" alt="Avatar 06">
-            <img src="assets/img/avatar-07.png" class="avatar-item" data-url="assets/img/avatar-07.png" alt="Avatar 07">
-            <img src="assets/img/avatar-08.png" class="avatar-item" data-url="assets/img/avatar-08.png" alt="Avatar 08">
-            <img src="assets/img/avatar-09.png" class="avatar-item" data-url="assets/img/avatar-09.png" alt="Avatar 09">
+            <img src="https://raw.githubusercontent.com/pauliihdarkness/citas-clon-v2/main/assets/img/avatar-01.png" class="avatar-item" data-url="https://raw.githubusercontent.com/pauliihdarkness/citas-clon-v2/main/assets/img/avatar-01.png" alt="Avatar 01">
+            <img src="https://raw.githubusercontent.com/pauliihdarkness/citas-clon-v2/main/assets/img/avatar-02.png" class="avatar-item" data-url="https://raw.githubusercontent.com/pauliihdarkness/citas-clon-v2/main/assets/img/avatar-02.png" alt="Avatar 02">
+            <img src="https://raw.githubusercontent.com/pauliihdarkness/citas-clon-v2/main/assets/img/avatar-03.png" class="avatar-item" data-url="https://raw.githubusercontent.com/pauliihdarkness/citas-clon-v2/main/assets/img/avatar-03.png" alt="Avatar 03">
+            <img src="https://raw.githubusercontent.com/pauliihdarkness/citas-clon-v2/main/assets/img/avatar-04.png" class="avatar-item" data-url="https://raw.githubusercontent.com/pauliihdarkness/citas-clon-v2/main/assets/img/avatar-04.png" alt="Avatar 04">
+            <img src="https://raw.githubusercontent.com/pauliihdarkness/citas-clon-v2/main/assets/img/avatar-05.png" class="avatar-item" data-url="https://raw.githubusercontent.com/pauliihdarkness/citas-clon-v2/main/assets/img/avatar-05.png" alt="Avatar 05">
+            <img src="https://raw.githubusercontent.com/pauliihdarkness/citas-clon-v2/main/assets/img/avatar-06.png" class="avatar-item" data-url="https://raw.githubusercontent.com/pauliihdarkness/citas-clon-v2/main/assets/img/avatar-06.png" alt="Avatar 06">
+            <img src="https://raw.githubusercontent.com/pauliihdarkness/citas-clon-v2/main/assets/img/avatar-07.png" class="avatar-item" data-url="https://raw.githubusercontent.com/pauliihdarkness/citas-clon-v2/main/assets/img/avatar-07.png" alt="Avatar 07">
+            <img src="https://raw.githubusercontent.com/pauliihdarkness/citas-clon-v2/main/assets/img/avatar-08.png" class="avatar-item" data-url="https://raw.githubusercontent.com/pauliihdarkness/citas-clon-v2/main/assets/img/avatar-08.png" alt="Avatar 08">
+            <img src="https://raw.githubusercontent.com/pauliihdarkness/citas-clon-v2/main/assets/img/avatar-09.png" class="avatar-item" data-url="https://raw.githubusercontent.com/pauliihdarkness/citas-clon-v2/main/assets/img/avatar-09.png" alt="Avatar 09">
           </div>
         </div>
 
@@ -389,7 +436,17 @@
           <div class="grid-2">
             <div class="filter-group">
               <label>orientacion:</label>
-              <input type="text" id="orientacion" name="orientacion" placeholder="Lesbiana">
+              <select id="orientacion" name="orientacion" class="select-retro" required>
+                <option value="" disabled selected>-- SELECCIONAR_ORIENTACION --</option>
+                <option value="Lesbiana">[ LESBIANA ]</option>
+                <option value="Bisexual">[ BISEXUAL ]</option>
+                <option value="Pansexual">[ PANSEXUAL ]</option>
+                <option value="Asexual">[ ASEXUAL ]</option>
+                <option value="Sáfica">[ SÁFICA ]</option>
+                <option value="Heterosexual">[ HETEROSEXUAL ]</option>
+                <option value="En duda">[ EN_DUDA ]</option>
+                <option value="Reservado">[ RESERVADO ]</option>
+              </select>
             </div>
           </div>
           <div class="filters-grid" style="margin-top: 10px;">
@@ -473,6 +530,12 @@
               <option value="Frutilla">[ FRUTILLA ]</option>
               <option value="Mixta">[ MIXTA ]</option>
               <option value="Red Velvet">[ RED_VELVET ]</option>
+              <option value="Sin_Azucar">[ SIN_AZUCAR ]</option>
+              <option value="Limón">[ LIMÓN ]</option>
+              <option value="Chocotorta">[ CHOCOTORTA ]</option>
+              <option value="Dulce_de_Leche">[ DULCE_DE_LECHE ]</option>
+              <option value="Cheesecake">[ CHEESECAKE ]</option>
+              <option value="Tiramisú">[ TIRAMISÚ ]</option>            
             </select>
           </div>
         </div>
@@ -506,30 +569,25 @@
           <div class="grid-3" style="margin-bottom: 10px;">
             <div class="filter-group">
               <label>pais:</label>
-              <input type="text" id="pais" name="pais" placeholder="Argentina" readonly
-                style="opacity: 0.8; cursor: not-allowed;">
+              <input type="text" id="pais" name="pais" placeholder="Argentina">
             </div>
             <div class="filter-group">
               <label>provincia:</label>
-              <input type="text" id="provincia" name="provincia" placeholder="Misiones" readonly
-                style="opacity: 0.8; cursor: not-allowed;">
+              <input type="text" id="provincia" name="provincia" placeholder="Misiones">
             </div>
             <div class="filter-group">
               <label>ciudad:</label>
-              <input type="text" id="ciudad" name="ciudad" placeholder="Posadas" readonly
-                style="opacity: 0.8; cursor: not-allowed;">
+              <input type="text" id="ciudad" name="ciudad" placeholder="Posadas">
             </div>
           </div>
           <div class="grid-2">
             <div class="filter-group">
               <label>departamento:</label>
-              <input type="text" id="departamento" name="departamento" placeholder="Capital" readonly
-                style="opacity: 0.8; cursor: not-allowed;">
+              <input type="text" id="departamento" name="departamento" placeholder="Capital">
             </div>
             <div class="filter-group">
               <label>barrio / columna:</label>
-              <input type="text" id="columna" name="columna" placeholder="Palermo" readonly
-                style="opacity: 0.8; cursor: not-allowed;">
+              <input type="text" id="columna" name="columna" placeholder="Palermo">
             </div>
           </div>
         </div>
@@ -548,30 +606,36 @@
   <script type="module" src="assets/js/menu-toggle.js"></script>
   <script type="module" src="assets/js/notifications.js"></script>
   <script type="module">
+    import { db, auth, doc, setDoc, getDoc, serverTimestamp } from './assets/js/firebase-config.js';
+    import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
     import { geoManager } from './assets/js/geo-manager.js';
+    import notifications from './assets/js/notifications.js';
+    
+    // Estado local para coordenadas
+    let currentCoords = null;
 
     // Lógica de búsqueda de ubicación
     const searchInput = document.getElementById('geo-search-input');
     const searchBtn = document.getElementById('geo-search-btn');
     const resultsContainer = document.getElementById('geo-results');
-
+    
     async function performSearch() {
       const query = searchInput.value;
       if (!query) return;
-
+      
       searchBtn.innerText = '[ ... ]';
       resultsContainer.innerHTML = '<div style="padding: 10px;">Buscando en satélites...</div>';
       resultsContainer.classList.remove('hidden');
-
+      
       const results = await geoManager.searchLocation(query);
-
+      
       searchBtn.innerText = '[ BUSCAR ]';
-
+      
       if (results.length === 0) {
         resultsContainer.innerHTML = '<div style="padding: 10px;">No se encontraron coordenadas.</div>';
         return;
       }
-
+      
       resultsContainer.innerHTML = results.map((r, i) => `
         <div class="geo-result-item" data-index="${i}" style="
           padding: 8px 12px; 
@@ -582,7 +646,7 @@
           ${r.display_name}
         </div>
       `).join('');
-
+      
       // Click en resultado
       resultsContainer.querySelectorAll('.geo-result-item').forEach(item => {
         item.addEventListener('hover', () => item.style.background = 'rgba(255,176,0,0.1)');
@@ -594,17 +658,18 @@
         });
       });
     }
-
+    
     function populateFields(data) {
       document.getElementById('pais').value = data.pais;
       document.getElementById('provincia').value = data.provincia;
       document.getElementById('ciudad').value = data.ciudad;
       document.getElementById('departamento').value = data.departamento;
       document.getElementById('columna').value = data.columna;
-
-      // Guardar coords para el futuro (puedes agregarlas a un hidden field o variable global)
-      console.log('📍 Coordenadas detectadas:', data.coords);
-
+      
+      // Guardar coords para el futuro
+      currentCoords = data.coords;
+      console.log('📍 Coordenadas detectadas:', currentCoords);
+      
       // Feedback visual
       const h2 = document.querySelector('.form-section h2');
       const originalText = h2.innerText;
@@ -615,7 +680,7 @@
         h2.style.color = '';
       }, 2000);
     }
-
+    
     searchBtn.addEventListener('click', performSearch);
     searchInput.addEventListener('keypress', (e) => {
       if (e.key === 'Enter') {
@@ -669,11 +734,191 @@
         const url = item.getAttribute('data-url');
         fotoUrlInput.value = url;
         updatePreview(url);
-
+        
         // Resaltar selección
         avatarItems.forEach(i => i.classList.remove('selected'));
         item.classList.add('selected');
       });
+    });
+
+    // --- CARGAR PERFIL EXISTENTE ---
+    async function loadExistingProfile(uid) {
+      try {
+        const docRef = doc(db, 'users', uid);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          console.log('🔄 Cargando datos existentes:', data);
+
+          // Campos básicos
+          const form = document.getElementById('create-profile-form');
+          if (data.alias) form.alias.value = data.alias;
+          if (data.edad) form.edad.value = data.edad;
+          if (data.busqueda) form.busqueda.value = data.busqueda;
+          if (data.link) form.link.value = data.link;
+          if (data.orientacion) form.orientacion.value = data.orientacion;
+
+          // Detalles Personales (Selects)
+          if (data.salud) form.salud.value = data.salud;
+          if (data.soledad) form.soledad.value = data.soledad;
+          if (data.torta) form.torta.value = data.torta;
+
+          // Animales (Checkboxes)
+          if (data.animales && Array.isArray(data.animales)) {
+            data.animales.forEach(val => {
+              const cb = form.querySelector(`input[name="animales"][value="${val}"]`);
+              if (cb) cb.checked = true;
+            });
+          }
+
+          // Ubicación
+          if (data.pais) form.pais.value = data.pais;
+          if (data.provincia) form.provincia.value = data.provincia;
+          if (data.ciudad) form.ciudad.value = data.ciudad;
+          if (data.departamento) form.departamento.value = data.departamento;
+          if (data.columna) form.columna.value = data.columna;
+          
+          if (data.coords) {
+            currentCoords = data.coords;
+            console.log('📍 Coords restauradas:', currentCoords);
+          }
+
+          // Visual Identity (Avatar / Foto)
+          if (data.fotoPerfilUrl) {
+            fotoUrlInput.value = data.fotoPerfilUrl;
+            updatePreview(data.fotoPerfilUrl);
+            
+            // Resaltar en el grid si es uno de los avatares default
+            avatarItems.forEach(item => {
+              if (item.getAttribute('data-url') === data.fotoPerfilUrl) {
+                item.classList.add('selected');
+              } else {
+                item.classList.remove('selected');
+              }
+            });
+          }
+
+          // Disparar evento input para el contador de caracteres si hay búsqueda
+          if (data.busqueda) {
+            busquedaTextarea.dispatchEvent(new Event('input'));
+          }
+
+          // Guardar alias en localStorage para acceso rápido
+          if (data.alias) localStorage.setItem('alias', data.alias);
+
+          notifications.show('♻️ DATOS_RECUPERADOS_DEL_SISTEMA', 'info');
+        }
+      } catch (error) {
+        console.error('❌ Error cargando perfil:', error);
+      }
+    }
+
+    // Listener de Auth para disparar la carga
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        loadExistingProfile(user.uid);
+      }
+    });
+
+    // --- GUARDADO EN FIRESTORE ---
+    const profileForm = document.getElementById('create-profile-form');
+    const submitBtn = profileForm.querySelector('button[type="submit"]');
+
+    profileForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const user = auth.currentUser;
+      if (!user) {
+        notifications.show('❌ Error: Usuario no autenticado.', 'error');
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.innerText = '[ GUARDANDO... ]';
+
+      try {
+        const formData = new FormData(profileForm);
+        
+        // Procesar animales as array
+        const animales = [];
+        profileForm.querySelectorAll('input[name="animales"]:checked').forEach(cb => {
+          animales.push(cb.value);
+        });
+
+        // Normalización Robusta de Coordenadas [lat, lon]
+        let finalCoords = null;
+        if (currentCoords) {
+          if (Array.isArray(currentCoords)) {
+            finalCoords = [parseFloat(currentCoords[0]), parseFloat(currentCoords[1])];
+          } else if (currentCoords.latitude && currentCoords.longitude) {
+            finalCoords = [parseFloat(currentCoords.latitude), parseFloat(currentCoords.longitude)];
+          } else if (currentCoords.lat && (currentCoords.lng || currentCoords.lon)) {
+            finalCoords = [parseFloat(currentCoords.lat), parseFloat(currentCoords.lng || currentCoords.lon)];
+          }
+        }
+
+        const profileData = {
+          authUid: user.uid,
+          alias: formData.get('alias'),
+          edad: parseInt(formData.get('edad')),
+          fotoPerfilUrl: formData.get('fotoPerfilUrl') || "https://raw.githubusercontent.com/pauliihdarkness/citas-clon-v2/main/assets/img/avatar-01.png",
+          busqueda: formData.get('busqueda'),
+          link: formData.get('link'), // instagram
+          orientacion: formData.get('orientacion'),
+          
+          // Detalles Personales
+          animales: animales,
+          salud: formData.get('salud'),
+          soledad: formData.get('soledad'),
+          torta: formData.get('torta'),
+          
+          // Ubicación
+          pais: formData.get('pais'),
+          provincia: formData.get('provincia'),
+          ciudad: formData.get('ciudad'),
+          departamento: formData.get('departamento'),
+          columna: formData.get('columna'),
+          coords: finalCoords,
+          
+          // Campos automáticos
+          creadoEn: serverTimestamp(),
+          isOnline: true,
+          lastSeen: serverTimestamp(),
+          likeCount: 0,
+          mensajesEnviados: 0,
+          fcmToken: "",
+          platform: navigator.platform.toLowerCase().includes('win') ? 'windows' : 
+                    navigator.platform.toLowerCase().includes('mac') ? 'macos' :
+                    navigator.platform.toLowerCase().includes('iphone') ? 'ios' : 'linux/android'
+        };
+
+        // Debug de lo que se enviará
+        console.log('📦 ENVIANDO_AL_SISTEMA:', profileData);
+        if (finalCoords) {
+          console.log(`📍 Coordenadas finales: Lat ${finalCoords[0]}, Lon ${finalCoords[1]}`);
+        } else {
+          console.warn('⚠️ Guardando perfil sin coordenadas.');
+        }
+
+        // Guardar documento usando el UID como nombre de doc
+        await setDoc(doc(db, 'users', user.uid), profileData);
+
+        // Guardar alias en localStorage para acceso rápido
+        localStorage.setItem('alias', profileData.alias);
+
+        notifications.show('✅ PERFIL_INICIALIZADO_CON_ÉXITO', 'success');
+        
+        setTimeout(() => {
+          window.location.href = 'profile.html';
+        }, 1500);
+
+      } catch (error) {
+        console.error('❌ Error al guardar perfil:', error);
+        notifications.show('❌ Error de conexión con SYS: ' + error.message, 'error');
+        submitBtn.disabled = false;
+        submitBtn.innerText = '[ GUARDAR_PERFIL ]';
+      }
     });
   </script>
   <script src="https://unpkg.com/lucide@latest"></script>

@@ -160,6 +160,18 @@ function processUsers() {
 }
 
 // ============================================================================
+// HELPERS
+// ============================================================================
+function getSafeImageUrl(url, alias) {
+    const name = alias || '?';
+    const fallback = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=0b1220&color=ffa500&size=200`;
+    if (!url || typeof url !== 'string' || (!url.startsWith('http') && !url.startsWith('data:'))) {
+        return fallback;
+    }
+    return url;
+}
+
+// ============================================================================
 // MARCADORES
 // ============================================================================
 function addMarker(user) {
@@ -171,19 +183,40 @@ function addMarker(user) {
         iconAnchor: [10, 10]
     });
 
+    const imageUrl = getSafeImageUrl(user.fotoPerfilUrl, user.alias);
+    
     const popup = `
-        <div class="user-popup">
-            <h3>${user.alias || 'Usuario'} ${user.membresia ? '<span class="badge-premium" style="font-size:10px; vertical-align:middle; margin-left:5px;">PREMIUM</span>' : ''}</h3>
-            <p><span class="popup-label">LOCALIZACIÓN:</span> <span class="popup-value">${user._locationStr}</span></p>
-            <p><span class="popup-label">EDAD / ORIENT:</span> <span class="popup-value">${user.edad || '??'} / ${user.orientacion || '??'}</span></p>
-            ${user.busqueda ? `<p><span class="popup-label">BUSCANDO:</span> <span class="popup-value">${user.busqueda}</span></p>` : ''}
+        <div class="user-popup-card">
+            <div class="popup-header">
+                <div class="popup-avatar-wrapper">
+                    <img src="${imageUrl}" class="popup-avatar" alt="${user.alias || 'Usuario'}">
+                </div>
+                <div class="popup-title">
+                    <h3>${user.alias || 'Anónimo'} ${user.membresia ? '★' : ''}</h3>
+                    <span class="popup-subtitle">${user.edad || '??'} AÑOS | ${user.orientacion || 'S/D'}</span>
+                </div>
+            </div>
+            <div class="popup-body">
+                <div class="popup-info-row">
+                    <i data-lucide="map-pin" class="popup-info-icon"></i>
+                    <span class="popup-info-text">${user._locationStr}</span>
+                </div>
+                ${user.busqueda ? `
+                <div class="popup-bio">
+                    "${user.busqueda}"
+                </div>` : ''}
+            </div>
             <div class="popup-footer">
-                <a href="user-profile.html?id=${user.id}" class="popup-link">ABRIR PERFIL</a>
+                <a href="user-profile.html?id=${user.id}" class="btn-retro-popup">EXPEDIENTE_COMPLETO</a>
             </div>
         </div>`;
 
     const marker = L.marker(user._coords, { icon }).bindPopup(popup);
-    marker.on('click', () => map.panTo(user._coords));
+    marker.on('click', () => {
+        map.panTo(user._coords);
+        // Reinicializar iconos de Lucide en el popup después de abrirse
+        setTimeout(() => lucide.createIcons(), 10);
+    });
     markersLayer.addLayer(marker);
     
     // Registrar marcador para acceso rápido desde búsqueda
