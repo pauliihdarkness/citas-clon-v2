@@ -641,9 +641,47 @@ nav a.nav-active {
   letter-spacing: 0.05em
 }
 
+.profile-top-actions {
+  position: absolute;
+  top: 15px;
+  display: flex;
+  gap: 10px;
+  z-index: 10;
+}
+
+.profile-top-actions.left {
+  left: 15px;
+}
+
+.profile-top-actions.right {
+  right: 15px;
+}
+
+.btn-hud-icon {
+  background: rgba(255, 176, 0, 0.05);
+  border: 1px solid var(--border);
+  color: var(--accent);
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-hud-icon:hover {
+  background: var(--accent);
+  color: var(--bg);
+  box-shadow: 0 0 10px var(--accent);
+  transform: translateY(-2px);
+}
+
 .detail-value {
   color: var(--text);
-  word-break: break-all;
+  overflow-wrap: break-word;
+  word-break: normal;
   font-family: 'Courier New', monospace
 }
 
@@ -1427,6 +1465,334 @@ html {
   z-index: 2;
 }
 
+/* INBOX & CHAT SYSTEM */
+.inbox-container {
+  display: flex;
+  height: calc(100dvh - 120px); /* Usando dvh para mejor soporte de teclado móvil */
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+  margin-top: 0; /* Eliminado el margen superior para aprovechar más espacio */
+}
+
+/* Sidebar: List */
+.inbox-sidebar {
+  width: 320px;
+  border-right: 2px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  background: rgba(0, 0, 0, 0.4);
+  transition: transform 0.3s ease;
+  flex-shrink: 0;
+}
+
+.inbox-sidebar-header {
+  padding: 16px;
+  border-bottom: 2px solid var(--border);
+  background: var(--card);
+}
+
+.inbox-sidebar-header h2 {
+  margin: 0;
+  font-size: 1.1rem;
+  letter-spacing: 2px;
+  text-shadow: 0 0 10px var(--accent);
+}
+
+.conversations-list {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.conv-item {
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(255, 176, 0, 0.1);
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.conv-item:hover {
+  background: rgba(255, 176, 0, 0.05);
+}
+
+.conv-item.active {
+  background: rgba(255, 176, 0, 0.15);
+  border-left: 4px solid var(--accent);
+  box-shadow: inset 8px 0 15px -10px var(--accent);
+  animation: conv-active-pulse 3s infinite ease-in-out;
+}
+
+@keyframes conv-active-pulse {
+  0% { border-left-color: var(--accent); }
+  50% { border-left-color: var(--secondary); box-shadow: inset 12px 0 20px -10px var(--accent); }
+  100% { border-left-color: var(--accent); }
+}
+
+.chat-header-skeleton {
+  animation: skeleton-pulse 1.5s infinite ease-in-out;
+}
+
+.skeleton-avatar, .skeleton-line {
+  border-radius: 4px;
+}
+
+@keyframes skeleton-pulse {
+  0% { opacity: 0.6; }
+  50% { opacity: 1; }
+  100% { opacity: 0.6; }
+}
+
+.chat-flicker {
+  animation: crt-flicker 0.2s ease-out;
+}
+
+@keyframes crt-flicker {
+  0% { opacity: 0; filter: brightness(3) contrast(2); }
+  50% { opacity: 0.8; filter: brightness(1.5) contrast(1.5); }
+  100% { opacity: 1; filter: brightness(1) contrast(1); }
+}
+
+.conv-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.conv-item:hover .conv-avatar {
+  transform: scale(1.05);
+  border-color: var(--accent);
+}
+
+.conv-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.conv-title {
+  font-weight: bold;
+  font-size: 0.95rem;
+  margin-bottom: 2px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.conv-preview {
+  font-size: 0.8rem;
+  color: var(--secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.conv-time {
+  font-size: 0.7rem;
+  opacity: 0.5;
+}
+
+/* Main Area: Chat */
+.inbox-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: url('https://www.transparenttextures.com/patterns/carbon-fibre.png'), #030303;
+  overflow: hidden; /* Muy importante para que el header se mantenga */
+}
+
+.inbox-empty {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--secondary);
+  opacity: 0.5;
+  text-align: center;
+  padding: 20px;
+}
+
+.chat-header {
+  padding: 10px 16px;
+  background: var(--card);
+  border-bottom: 2px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 10;
+  flex-shrink: 0; /* No permitir que se encoja */
+}
+
+.chat-messages {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+/* Message Bubbles */
+.message-bubble {
+  max-width: 80%;
+  padding: 10px 14px;
+  border-radius: 12px;
+  position: relative;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  word-wrap: break-word;
+}
+
+.message-bubble.received {
+  align-self: flex-start;
+  background: rgba(40, 40, 40, 0.9);
+  border: 1px solid var(--border);
+  border-bottom-left-radius: 2px;
+}
+
+.message-bubble.sent {
+  align-self: flex-end;
+  background: rgba(255, 176, 0, 0.1);
+  border: 1px solid var(--accent);
+  border-bottom-right-radius: 2px;
+  box-shadow: 0 0 15px rgba(255, 176, 0, 0.05);
+}
+
+.message-time {
+  font-size: 0.65rem;
+  opacity: 0.6;
+  margin-top: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+}
+
+/* Input Area */
+.chat-input-container {
+  padding: 12px 16px;
+  background: var(--card);
+  border-top: 2px solid var(--border);
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+  flex-shrink: 0;
+}
+
+.chat-input {
+  flex: 1;
+  background: var(--bg);
+  border: 2px solid var(--border);
+  color: var(--text);
+  padding: 12px;
+  border-radius: 6px;
+  font-family: inherit;
+  resize: none;
+  min-height: 48px;
+  max-height: 120px;
+  line-height: 1.5;
+  font-size: 1rem;
+}
+
+.chat-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 10px rgba(255, 176, 0, 0.2);
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .inbox-container {
+    height: calc(100dvh - 72px); /* Ajuste exacto considerando el padding-top del body */
+    border-radius: 0; /* Elimina redondeado para cubrir toda la pantalla */
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
+    margin-top: -8px; /* Compensa posibles paddings de contenedores superiores */
+  }
+
+  .inbox-sidebar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 20;
+  }
+
+  .inbox-sidebar.is-hidden {
+    transform: translateX(-100%);
+  }
+
+  .inbox-main {
+    width: 100%;
+    height: 100%;
+  }
+
+  .chat-header .back-btn {
+    display: flex !important;
+  }
+}
+
+.chat-header .back-btn {
+  display: none;
+}
+
+/* BIOS BOOT SEQUENCE */
+.bios-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #000;
+  color: var(--accent);
+  font-family: 'Share Tech Mono', monospace;
+  padding: 40px;
+  z-index: 9999;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.bios-line {
+  font-size: 18px;
+  line-height: 1.4;
+  margin: 0;
+  min-height: 1.4em;
+}
+
+.bios-cursor {
+  display: inline-block;
+  width: 10px;
+  height: 18px;
+  background: var(--accent);
+  margin-left: 4px;
+  animation: bios-blink 0.8s infinite;
+}
+
+@keyframes bios-blink {
+  0%, 100% { opacity: 0; }
+  50% { opacity: 1; }
+}
+
+.bios-skip-hint {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  font-size: 12px;
+  opacity: 0.4;
+}
+
 /* Overlay Effects */
 .modal-body::after {
   content: "";
@@ -1679,17 +2045,167 @@ html {
 }
 
 /* =========================================
-   OPTIMIZACIÓN MOBILE EXTREMO (320px)
+   NUEVA JERARQUÍA DE PERFIL
    ========================================= */
-@media (max-width: 320px) {
+.profile-group-container {
+  margin-bottom: 24px;
+  background: rgba(255, 176, 0, 0.02);
+  border-radius: 8px;
+  padding: 4px;
+}
+
+.profile-group-container:last-child {
+  margin-bottom: 0;
+}
+
+.detail-rows-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.detail-rows-grid.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+/* Estilos de Etiquetas (Pills) para valores de lista */
+.detail-tags-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.detail-tag {
+  background: rgba(255, 176, 0, 0.1);
+  border: 1px solid rgba(255, 176, 0, 0.3);
+  color: var(--text);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Biografía */
+.bio-text {
+  font-family: var(--sans);
+  line-height: 1.5;
+  white-space: pre-wrap;
+  font-size: 13px !important;
+  color: var(--secondary);
+  border-left: 2px solid var(--accent);
+  padding-left: 12px;
+  margin-top: 8px;
+}
+
+.detail-row.full-width {
+  grid-column: span 2;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  gap: 8px;
+}
+
+.detail-row.full-width .detail-label {
+  margin-bottom: 4px;
+  border-bottom: 1px solid rgba(255, 176, 0, 0.1);
+  width: 100%;
+  padding-bottom: 4px;
+}
+
+/* =========================================
+   SISTEMA DE BADGES (Placas de Perfil)
+   ========================================= */
+.profile-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 12px 0;
+  justify-content: center; /* Centrado en header por defecto */
+}
+
+@media (min-width: 501px) {
+  .profile-header:not(.center) .profile-badges {
+    justify-content: flex-start;
+  }
+}
+
+.profile-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.badge-online {
+  color: #00ff00;
+  border-color: rgba(0, 255, 0, 0.3);
+  background: rgba(0, 255, 0, 0.05);
+  box-shadow: 0 0 8px rgba(0, 255, 0, 0.1);
+  animation: pulse-green 2s infinite;
+}
+
+.badge-premium {
+  color: #ffcc00;
+  border-color: rgba(255, 204, 0, 0.4);
+  background: rgba(255, 204, 0, 0.1);
+  box-shadow: 0 0 8px rgba(255, 204, 0, 0.2);
+}
+
+.badge-cupcake {
+  color: #a67200;
+  border-color: rgba(166, 114, 0, 0.3);
+  background: rgba(166, 114, 0, 0.05);
+}
+
+.badge-distance {
+  color: #ffb000;
+  border-color: rgba(255, 176, 0, 0.4);
+  background: rgba(255, 176, 0, 0.08);
+  box-shadow: 0 0 8px rgba(255, 176, 0, 0.15);
+}
+
+@keyframes pulse-green {
+  0% { box-shadow: 0 0 0 0 rgba(0, 255, 0, 0.4); }
+  70% { box-shadow: 0 0 0 6px rgba(0, 255, 0, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(0, 255, 0, 0); }
+}
+
+@media (max-width: 500px) {
+  .profile-badges {
+    justify-content: center;
+    gap: 6px;
+  }
+  
+  .profile-badge {
+    font-size: 9px;
+    padding: 3px 8px;
+  }
+}
+
+/* =========================================
+   OPTIMIZACIÓN MOBILE GENERAL (500px)
+   ========================================= */
+@media (max-width: 500px) {
   .container {
     padding-left: 10px;
     padding-right: 10px;
   }
   
   .profile-header {
-    flex-direction: column;
-    align-items: center;
+    flex-direction: column !important;
+    align-items: center !important;
     text-align: center;
     gap: 16px;
   }
@@ -1701,7 +2217,7 @@ html {
   }
   
   .detail-row {
-    flex-direction: column;
+    flex-direction: column !important;
     gap: 4px;
     padding: 10px 5px;
   }
@@ -1716,11 +2232,22 @@ html {
     width: 100%;
     font-size: 11px;
     padding-left: 2px;
+    overflow-wrap: break-word;
+    word-break: normal;
   }
   
   .profile-section-header {
     font-size: 11px;
     padding: 8px 4px;
+    margin-bottom: 8px;
+    border-bottom: 1px solid rgba(255,176,0,0.1);
+    display: flex;
+    align-items: center;
+  }
+
+  .detail-rows-grid.grid-2 {
+    grid-template-columns: 1fr;
+    gap: 2px;
   }
   
   .nav-header .nav-logo {
@@ -1732,7 +2259,6 @@ html {
     padding: 12px;
   }
   
-  /* Ajuste de formulario de creacin si aplica */
   .photo-upload-container {
     flex-direction: column;
     text-align: center;
@@ -1752,12 +2278,28 @@ html {
     width: 100%;
   }
   
-  .profile-actions .btn {
+  .profile-actions .btn, .responsive-action-grid .btn {
     width: 100%;
     justify-content: center;
+    padding: 12px;
+    font-size: 11px;
   }
+}
 
-  /* Ajustes para el panel de configuración en 320px */
+/* Espaciado de Iconos y Símbolos */
+.profile-field-lucide {
+  margin-right: 8px !important;
+  vertical-align: middle;
+  color: var(--accent);
+}
+
+.section-indicator {
+  margin-right: 12px;
+  color: var(--accent);
+  font-weight: bold;
+}
+
+@media (max-width: 500px) {
   .profile-card {
     padding: 12px;
   }

@@ -213,9 +213,9 @@
       }
 
       .avatar-grid {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 8px;
-        padding: 8px;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 6px;
+        padding: 6px;
       }
 
       .avatar-item {
@@ -426,7 +426,11 @@
           </div>
           <div class="filter-group" style="margin-top: 15px;">
             <label>instagram / username:</label>
-            <input type="text" id="link" name="link" placeholder="@claudia_v">
+            <div style="display: flex; align-items: center; gap: 4px; background: rgba(255,176,0,0.03); border: 1px solid var(--border); padding: 0 10px;">
+              <span style="font-size: 11px; color: var(--secondary); opacity: 0.8; user-select: none;">instagram.com/</span>
+              <input type="text" id="link" name="link" placeholder="pau_darkness" style="border: none; background: transparent; flex: 1; padding: 10px 0; color: var(--text);">
+            </div>
+            <p class="helper-text" style="font-size: 9px; margin-top: 4px; opacity: 0.6;">* INGRESA SOLO TU NOMBRE DE USUARIO SIN EL '@'.</p>
           </div>
         </div>
 

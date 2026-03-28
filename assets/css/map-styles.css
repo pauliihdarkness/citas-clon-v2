@@ -27,6 +27,15 @@ body.map-page nav {
   min-height: 0;
 }
 
+/* Fix flex chain for MapPage without breaking other pages */
+body.map-page .page-transition-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  flex: 1;
+  min-height: 0;
+}
+
 .map-wrapper {
   position: relative;
   flex: 1;
@@ -45,9 +54,8 @@ body.map-page nav {
 .map-search-overlay {
   position: absolute;
   top: 15px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 9999; /* Máximo nivel para estar sobre el mapa y escáneres */
+  left: 20px;
+  z-index: 9999;
   width: 90%;
   max-width: 450px;
   display: flex;
@@ -350,9 +358,112 @@ body.map-page nav {
   to { transform: scale(1.05); box-shadow: 0 0 20px rgba(255, 176, 0, 0.6); }
 }
 
+/* HUD Decorations */
+.radar-grid-overlay {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 1000;
+  background-image: 
+    linear-gradient(rgba(255, 176, 0, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 176, 0, 0.05) 1px, transparent 1px);
+  background-size: 50px 50px;
+  opacity: 0.5;
+}
+
+.radar-scanline {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 2px;
+  background: rgba(255, 176, 0, 0.2);
+  box-shadow: 0 0 10px rgba(255, 176, 0, 0.5);
+  z-index: 1001;
+  pointer-events: none;
+  animation: radar-scan 4s linear infinite;
+}
+
+@keyframes radar-scan {
+  0% { top: 0%; opacity: 0; }
+  5% { opacity: 1; }
+  95% { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+
+.hud-corner {
+  position: absolute;
+  z-index: 1002;
+  padding: 10px;
+  font-family: 'Share Tech Mono', monospace;
+  pointer-events: none;
+}
+
+.hud-corner.top-left { top: 80px; left: 20px; text-align: left; }
+.hud-corner.bottom-left { bottom: 20px; left: 20px; text-align: left; }
+
+.hud-tag {
+  font-size: 9px;
+  color: var(--secondary);
+  letter-spacing: 2px;
+}
+
+.hud-value {
+  font-size: 11px;
+  color: var(--accent);
+  text-shadow: 0 0 5px var(--accent);
+}
+
+/* My Marker Special */
+.marker-me {
+  border-color: #ffcc00 !important;
+  background: rgba(255, 204, 0, 0.3) !important;
+  z-index: 1000 !important;
+}
+
+.marker-me .marker-dot {
+  background: #fff !important;
+  box-shadow: 0 0 5px #fff;
+}
+
+.marker-pulse {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border: 1px solid var(--accent);
+  border-radius: 50%;
+  animation: marker-pulse-anim 2s infinite;
+}
+
+@keyframes marker-pulse-anim {
+  0% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(3); opacity: 0; }
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .map-wrapper { height: calc(100vh - 64px) !important; }
-  .map-search-overlay { top: 10px; width: 95%; }
+  .map-search-overlay { 
+    top: 10px; 
+    left: 10px;
+    width: 220px; /* Reducido para que no sature la pantalla */
+  }
   .leaflet-popup-content { width: 220px !important; }
+  .hud-corner.top-left { top: 70px; left: 10px; }
+  .hud-corner { display: block; scale: 0.8; transform-origin: left; }
+}
+
+/* Map Color Filter - Tactical Radar Look (Inverted for reliability) - SCOPED TO MAP PAGE ONLY */
+.map-layout .leaflet-tile-pane {
+  filter: invert(100%) hue-rotate(180deg) brightness(0.8) contrast(1.3) sepia(100%) hue-rotate(320deg);
+}
+
+/* Optional: Scanline texture even on map */
+#map::after {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), 
+              linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+  background-size: 100% 3px, 3px 100%;
+  z-index: 500;
+  pointer-events: none;
+  opacity: 0.3;
 }

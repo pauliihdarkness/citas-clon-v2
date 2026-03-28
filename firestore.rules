@@ -6,6 +6,12 @@ service cloud.firestore {
     match /users/{userId} {
       allow read: if true;  // Todos pueden leer profiles
       allow write: if request.auth.uid == userId;  // Solo owner puede escribir
+
+      // Subcolección de likes dados
+      match /likesGiven/{likeId} {
+        allow read: if request.auth != null; // Solo usuarios logueados pueden ver likes de otros
+        allow write: if request.auth.uid == userId; // Solo el dueño puede dar/quitar likes
+      }
     }
     
     // Conversaciones: Acceso para participantes
