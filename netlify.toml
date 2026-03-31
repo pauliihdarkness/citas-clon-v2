@@ -1,5 +1,5 @@
 [build]
-  # Forzar que el build se ejecute dentro de la subcarpeta react-app
+  # Netlify instalará automáticamente las dependencias de los workspaces
   command = "npm run build --prefix react-app"
   publish = "react-app/dist"
 

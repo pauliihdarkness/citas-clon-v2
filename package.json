@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "Citas Clon V2",
   "type": "module",
+  "workspaces": [
+    "react-app"
+  ],
   "scripts": {
     "dev": "vite",
     "build": "vite build",
