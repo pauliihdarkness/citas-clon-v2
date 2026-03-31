@@ -44,7 +44,7 @@ export default function App() {
     const updatePresence = async () => {
       try {
         const userRef = doc(db, 'users', currentUser.uid)
-        
+
         // Determinar si debemos mostrarnos online basado en los ajustes del perfil
         const canShowOnline = profile?.settings?.showOnline !== false
 
@@ -76,38 +76,38 @@ export default function App() {
     <ToastProvider>
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
-        <Route
-          path="/login"
-          element={
-            <LoginGate>
-              <PageTransition>
-                <LoginPage />
-              </PageTransition>
-            </LoginGate>
-          }
-        />
+          <Route
+            path="/login"
+            element={
+              <LoginGate>
+                <PageTransition>
+                  <LoginPage />
+                </PageTransition>
+              </LoginGate>
+            }
+          />
 
-        <Route path="/create-profile" element={<CreateProfileGate />}>
-          <Route element={<Layout />}>
-            <Route index element={<PageTransition><CreateProfilePage /></PageTransition>} />
+          <Route path="/create-profile" element={<CreateProfileGate />}>
+            <Route element={<Layout />}>
+              <Route index element={<PageTransition><CreateProfilePage /></PageTransition>} />
+            </Route>
           </Route>
-        </Route>
 
-        <Route element={<RequireUserWithProfile />}>
-          <Route element={<Layout />}>
-            <Route index element={<FeedPage />} />
-            <Route path="map" element={<MapPage />} />
-            <Route path="explorer" element={<PlaceholderPage title="Explorer" />} />
-            <Route path="storage" element={<PlaceholderPage title="Storage" />} />
-            <Route path="inbox" element={<InboxPage />} />
-            <Route path="chat" element={<PlaceholderPage title="Chat global" />} />
-            <Route path="activity" element={<RadarPage />} />
-            <Route path="profile" element={<MyProfilePage />} />
-            <Route path="profile/settings" element={<PageTransition><SettingsPage /></PageTransition>} />
-            <Route path="user/:userId" element={<UserPublicPage />} />
-            <Route path="*" element={<Navigate to="/" replace />} />
+          <Route element={<RequireUserWithProfile />}>
+            <Route element={<Layout />}>
+              <Route index element={<FeedPage />} />
+              <Route path="map" element={<MapPage />} />
+              <Route path="explorer" element={<PlaceholderPage title="Explorer" />} />
+              <Route path="storage" element={<PlaceholderPage title="Storage" />} />
+              <Route path="inbox" element={<InboxPage />} />
+              <Route path="chat" element={<PlaceholderPage title="Chat global" />} />
+              <Route path="activity" element={<RadarPage />} />
+              <Route path="profile" element={<MyProfilePage />} />
+              <Route path="profile/settings" element={<PageTransition><SettingsPage /></PageTransition>} />
+              <Route path="user/:userId" element={<UserPublicPage />} />
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Route>
           </Route>
-        </Route>
         </Routes>
       </AnimatePresence>
     </ToastProvider>

@@ -26,8 +26,34 @@ export function Layout() {
   const isFirstLoadRef = useRef(true)
 
   useEffect(() => {
+    const checkNavVisibility = () => {
+      const isMobile = window.innerWidth <= 768
+      const params = new URLSearchParams(location.search)
+      const isMap = location.pathname === '/map'
+      const isSpecificChat = location.pathname === '/inbox' && params.has('with')
+      
+      if (isMobile && (isSpecificChat || isMap)) {
+        document.body.classList.add('nav-hidden')
+      } else {
+        document.body.classList.remove('nav-hidden')
+      }
+    }
+
+    checkNavVisibility()
+    window.addEventListener('resize', checkNavVisibility)
+    
+    return () => {
+      window.removeEventListener('resize', checkNavVisibility)
+      document.body.classList.remove('nav-hidden')
+    }
+  }, [location])
+
+  useEffect(() => {
     document.body.classList.add('has-bottom-nav')
-    return () => document.body.classList.remove('has-bottom-nav')
+    return () => {
+      document.body.classList.remove('has-bottom-nav')
+      document.body.classList.remove('nav-hidden')
+    }
   }, [])
 
   // Escuchar mensajes no leídos
