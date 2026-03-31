@@ -53,7 +53,7 @@ export function ProfileMapSection({ viewedData, currentUserUid }) {
 
     L.circleMarker(viewedCoords, {
       radius: 6,
-      fillColor: '#ffcc00',
+      fillColor: viewedData.isOnline ? '#00ff00' : '#ffcc00',
       color: '#fff',
       weight: 2,
       fillOpacity: 1,
@@ -105,9 +105,12 @@ export function ProfileMapSection({ viewedData, currentUserUid }) {
           dashArray: '5, 10',
         }).addTo(map)
 
+        // Obtener el estado online del usuario actual (me)
+        const myIsOnline = true // Como estamos en la app, "nosotros" solemos estar online
+        
         L.circleMarker(myCoords, {
           radius: 6,
-          fillColor: '#00ff00',
+          fillColor: myIsOnline ? '#00ff00' : '#ffb000',
           color: '#fff',
           weight: 2,
           fillOpacity: 1,
@@ -174,15 +177,42 @@ export function ProfileMapSection({ viewedData, currentUserUid }) {
       </div>
 
       <div
-        ref={mapRef}
-        id="profile-map"
         style={{
+          position: 'relative',
           height: 240,
           borderRadius: 4,
-          border: '1px solid rgba(255, 176, 0, 0.2)',
-          filter: 'invert(100%) hue-rotate(180deg) brightness(0.7) contrast(1.2) sepia(60%) hue-rotate(320deg)',
+          overflow: 'hidden',
+          border: '1px solid rgba(255, 176, 0, 0.3)',
         }}
-      />
+        className="map-crt-container"
+      >
+        <div
+          ref={mapRef}
+          id="profile-map"
+          style={{
+            height: '100%',
+            width: '100%',
+            filter: 'sepia(100%) saturate(800%) hue-rotate(-30deg) brightness(0.7) contrast(1.4)',
+          }}
+        />
+        {/* CRT Overlay: Scanlines & Flicker */}
+        <div 
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            pointerEvents: 'none',
+            zIndex: 1000,
+            background: 'repeating-linear-gradient(rgba(0, 0, 0, 0) 0px, rgba(0, 0, 0, 0.15) 2px, rgba(0, 0, 0, 0) 4px)',
+            backgroundSize: '100% 4px',
+            boxShadow: 'inset 0 0 40px rgba(255, 176, 0, 0.1)',
+            animation: 'crt-flicker 0.15s infinite',
+          }} 
+          className="crt-scanning-overlay"
+        />
+      </div>
 
       {distanceHtml && (
         <div id="distance-info" style={{ marginTop: 12 }}>

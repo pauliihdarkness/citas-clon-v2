@@ -18,7 +18,8 @@ export function sortUsersByRecent(users) {
  * @param {object} f
  * @param {string} f.alias
  * @param {string} f.ciudad
- * @param {string} f.edad
+ * @param {string} f.minEdad
+ * @param {string} f.maxEdad
  * @param {boolean} f.membresia
  * @param {boolean} f.online
  * @param {boolean} f.platform
@@ -26,7 +27,8 @@ export function sortUsersByRecent(users) {
 export function filterFeedUsers(allUsers, f) {
   const aliasFilter = (f.alias || '').toLowerCase()
   const ciudadFilter = (f.ciudad || '').toLowerCase()
-  const edadFilter = f.edad || ''
+  const minEdad = f.minEdad ? parseInt(f.minEdad, 10) : null
+  const maxEdad = f.maxEdad ? parseInt(f.maxEdad, 10) : null
   const membresiaFilter = f.membresia
   const onlineFilter = f.online
   const platformFilter = f.platform
@@ -42,7 +44,11 @@ export function filterFeedUsers(allUsers, f) {
       (user.provincia || '').toLowerCase().includes(ciudadFilter) ||
       (user.pais || '').toLowerCase().includes(ciudadFilter)
 
-    const edadMatch = edadFilter ? String(user.edad) === String(edadFilter) : true
+    const userEdad = typeof user.edad === 'number' ? user.edad : parseInt(user.edad, 10)
+    const minMatch = minEdad === null || (!isNaN(userEdad) && userEdad >= minEdad)
+    const maxMatch = maxEdad === null || (!isNaN(userEdad) && userEdad <= maxEdad)
+    const edadMatch = minMatch && maxMatch
+
     const membresiaMatch = membresiaFilter ? user.membresia === true : true
     const onlineMatch = onlineFilter ? user.isOnline === true : true
     const platformMatch = platformFilter ? user.platform : true

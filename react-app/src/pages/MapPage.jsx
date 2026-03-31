@@ -80,9 +80,9 @@ export function MapPage() {
         setMapCenter(leafletMap.current.getCenter());
       });
 
-      L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
         maxZoom: 19,
-        attribution: '&copy; OpenStreetMap',
+        attribution: '&copy; CartoDB',
       }).addTo(leafletMap.current);
 
       // Add Zoom Control at bottom right
@@ -123,9 +123,9 @@ export function MapPage() {
       const icon = L.divIcon({
         className: 'custom-leaflet-marker',
         html: `
-          <div class="modern-marker ${user.isOnline ? 'marker-online' : ''} ${isMe ? 'marker-me' : ''}">
+          <div class="modern-marker ${user.isOnline ? 'marker-online' : (isMe ? 'marker-me' : '')}">
             <div class="marker-dot"></div>
-            ${isMe ? '<div class="marker-pulse"></div>' : ''}
+            ${(isMe && !user.isOnline) ? '<div class="marker-pulse"></div>' : ''}
           </div>
         `,
         iconSize: [20, 20],
@@ -232,11 +232,28 @@ export function MapPage() {
   return (
     <div className="map-layout" style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100dvh', zIndex: 50, background: '#000' }}>
       <div className="map-wrapper" style={{ width: '100%', height: '100%', position: 'relative' }}>
-        <div ref={mapRef} id="map" style={{ width: '100%', height: '100%' }}></div>
+        <div 
+          ref={mapRef} 
+          id="map" 
+          style={{ 
+            width: '100%', 
+            height: '100%' 
+          }}
+        ></div>
         
         {/* Radar Overlays */}
         <div className="radar-grid-overlay"></div>
-        <div className="radar-scanline"></div>
+        <div 
+          className="radar-scanline" 
+          style={{ 
+            animation: 'crt-flicker 0.15s infinite',
+            background: 'repeating-linear-gradient(rgba(0, 0, 0, 0) 0px, rgba(0, 0, 0, 0.15) 2px, rgba(0, 0, 0, 0) 4px)',
+            backgroundSize: '100% 4px',
+            pointerEvents: 'none',
+            zIndex: 1000,
+            opacity: 0.6
+          }}
+        ></div>
         
         {/* HUD Elements */}
         <div className="map-search-overlay">

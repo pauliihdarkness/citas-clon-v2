@@ -26,6 +26,7 @@ export function ProfileLikesGiven({ userId }) {
         setItems(
           snap.docs.map((d) => ({
             targetId: d.id,
+            alias: d.data().alias || d.id,
             timestamp: d.data().timestamp,
           })),
         )
@@ -72,15 +73,17 @@ export function ProfileLikesGiven({ userId }) {
               gap: '10px',
             }}
           >
-            {items.map(({ targetId, timestamp }) => (
+            {items.map(({ targetId, alias, timestamp }) => (
               <div
                 key={targetId}
                 style={{
                   padding: '8px 12px',
-                  border: '1px dashed var(--verde, #00ff55)',
-                  background: 'rgba(0, 255, 85, 0.05)',
-                  borderRadius: 5,
+                  border: '1px solid var(--border)',
+                  background: 'rgba(255, 176, 0, 0.05)',
+                  borderRadius: 4,
+                  transition: 'all 0.2s ease',
                 }}
+                className="like-item-card"
               >
                 <div
                   style={{
@@ -92,9 +95,9 @@ export function ProfileLikesGiven({ userId }) {
                 >
                   <Link
                     to={`/user/${encodeURIComponent(targetId)}`}
-                    style={{ color: 'var(--verde, #00ff55)', textDecoration: 'none' }}
+                    style={{ color: 'var(--accent)', textDecoration: 'none' }}
                   >
-                    @{targetId}
+                    @{alias}
                   </Link>
                 </div>
                 <div

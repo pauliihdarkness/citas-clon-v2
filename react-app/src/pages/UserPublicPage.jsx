@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { ArrowLeft, Camera, MessageCircle } from 'lucide-react'
-import { doc, getDoc } from 'firebase/firestore'
+import { ArrowLeft, Camera, Heart, MessageCircle } from 'lucide-react'
+import { deleteDoc, doc, getDoc, onSnapshot, serverTimestamp, setDoc } from 'firebase/firestore'
 import { ProfileDetails } from '../components/profile/ProfileDetails'
 import { ProfileLikesGiven } from '../components/profile/ProfileLikesGiven'
 import { ProfileMapSection } from '../components/profile/ProfileMapSection'
@@ -21,6 +21,7 @@ export function UserPublicPage() {
   const [phase, setPhase] = useState('loading')
   const [captureBusy, setCaptureBusy] = useState(false)
   const [distKm, setDistKm] = useState(null)
+  const [hasLiked, setHasLiked] = useState(false)
 
   useEffect(() => {
     let cancelled = false
@@ -62,6 +63,18 @@ export function UserPublicPage() {
       cancelled = true
     }
   }, [userId, currentUser])
+    
+  // Escuchar si el usuario actual ya dio like a este perfil
+  useEffect(() => {
+    if (!currentUser || !userId || phase !== 'ready') return undefined
+    
+    const likeDocRef = doc(db, 'users', currentUser.uid, 'likesGiven', userId)
+    const unsubscribe = onSnapshot(likeDocRef, (docSnap) => {
+      setHasLiked(docSnap.exists())
+    })
+    
+    return () => unsubscribe()
+  }, [currentUser, userId, phase])
 
   const goMessage = useCallback(() => {
     if (!profile?.data?.alias) {
@@ -107,6 +120,31 @@ export function UserPublicPage() {
     }
   }
 
+  async function handleLike() {
+    if (!currentUser) {
+      alert('Debes iniciar sesión para dar like.')
+      return
+    }
+    if (!userId) return
+
+    const likeDocRef = doc(db, 'users', currentUser.uid, 'likesGiven', userId)
+    
+    try {
+      if (hasLiked) {
+        await deleteDoc(likeDocRef)
+      } else {
+        await setDoc(likeDocRef, {
+          timestamp: serverTimestamp(),
+          targetId: userId,
+          alias: profile?.data?.alias || 'Usuario'
+        })
+      }
+    } catch (e) {
+      console.error('Error toggling like:', e)
+      alert('Error al procesar el like.')
+    }
+  }
+
   let body
   if (phase === 'missing') {
     body = <p className="error">ID de usuario no especificado</p>
@@ -134,6 +172,18 @@ export function UserPublicPage() {
           }
           rightActions={
             <>
+              <button
+                type="button"
+                className={`btn-hud-icon ${hasLiked ? 'active' : ''}`}
+                onClick={handleLike}
+                title={hasLiked ? 'Quitar Like' : 'Dar Like'}
+              >
+                <Heart 
+                  size={18} 
+                  fill={hasLiked ? 'currentColor' : 'none'} 
+                  aria-hidden 
+                />
+              </button>
               <button
                 type="button"
                 className="btn-hud-icon"

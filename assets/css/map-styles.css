@@ -308,26 +308,40 @@ body.map-page .page-transition-wrapper {
 
 /* Markers */
 .modern-marker {
-  width: 14px;
-  height: 14px;
-  background: rgba(13, 2, 8, 0.8);
+  width: 18px;
+  height: 18px;
+  background: rgba(13, 2, 8, 0.9);
   border: 2px solid var(--secondary, #a67200);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+  transition: all 0.2s ease;
+  position: relative;
 }
 
 .marker-online {
-  border-color: #00ff55;
-  box-shadow: 0 0 8px #00ff55;
+  border-color: #00ff55 !important;
+  box-shadow: 0 0 15px rgba(0, 255, 85, 0.6), inset 0 0 5px rgba(0, 255, 85, 0.4) !important;
+}
+
+.marker-online::after {
+  content: "";
+  position: absolute;
+  top: -4px; right: -4px; bottom: -4px; left: -4px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 255, 85, 0.5);
+  animation: marker-pulse-anim 2s infinite;
+  pointer-events: none;
 }
 
 .marker-dot {
-  width: 4px;
-  height: 4px;
-  background: var(--secondary, #a67200);
+  width: 6px;
+  height: 6px;
+  background: var(--accent);
   border-radius: 50%;
+  box-shadow: 0 0 5px var(--accent);
 }
 
 .marker-online .marker-dot {
@@ -450,9 +464,15 @@ body.map-page .page-transition-wrapper {
   .hud-corner { display: block; scale: 0.8; transform-origin: left; }
 }
 
-/* Map Color Filter - Tactical Radar Look (Inverted for reliability) - SCOPED TO MAP PAGE ONLY */
+/* Map Color Filter - Tactical Radar Look - SCOPED TO TILE PANE ONLY */
 .map-layout .leaflet-tile-pane {
-  filter: invert(100%) hue-rotate(180deg) brightness(0.8) contrast(1.3) sepia(100%) hue-rotate(320deg);
+  filter: sepia(100%) saturate(1000%) hue-rotate(-20deg) brightness(0.6) contrast(1.5) !important;
+}
+
+/* Ensure markers and other panes are not affected and have high contrast */
+.leaflet-marker-pane, .leaflet-overlay-pane {
+  filter: none !important;
+  z-index: 600;
 }
 
 /* Optional: Scanline texture even on map */

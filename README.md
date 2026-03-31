@@ -1,91 +1,83 @@
-# Citas Clon V2 🖥️
+# CITAS CLON V2 — BIOS HUD 🖥️
 
-Una aplicación web social retro con temática de terminal (CRT/MS-DOS) que incluye funcionalidades de geolocalización, perfiles de usuario, mensajería en tiempo real y más.
+Una plataforma social inmersiva con una estética retro-futurista de terminal (CRT/BIOS) construida con **React** y **Firebase**. El proyecto simula un entorno de monitoreo "BIOS" para conectar usuarios mediante geolocalización, mensajería en tiempo real y una interfaz HUD premium.
 
-## 🚀 Características Principales
+---
 
-- **Interfaz Retro CRT:** Estilo inmersivo y nostálgico que simula un entorno de terminal clásico, con colores vibrantes y monospaced fonts, efectos de brillo (glow) y elementos UI detallados.
-- **Feed de Usuarios:** Visualización de perfiles con filtros avanzados por alias, ciudad, edad, estado en línea, dispositivo y membresía premium («Corona»).
-- **Geo Tracker (Mapa interactivo):** Integración con mapas para visualizar a los usuarios en función de su geolocalización. Sistema optimizado de resolución de coordenadas con `geonames.org` y jerarquía geográfica enfocada (ej., Argentina por defecto para datos ambiguos).
-- **Sistema de Chat:**
-  - **Global (`chat.html`):** Sala de chat en tiempo real para todos los usuarios conectados.
-  - **Inbox/Personal (`chat-personal.html`):** Mensajería directa 1 a 1 entre usuarios con indicación de estado ("escribiendo...").
-- **Perfiles de Usuario:** Creación detallada de perfiles (`create-profile.html`) con campos interactivos, edición de preferencias, carga de imágenes y contador de caracteres en tiempo real.
-- **Panel de Actividad (`activity.html`):** Seguimiento de las interacciones recientes, histórico de likes (likes dados y recibidos).
-- **Explorador y Almacenamiento:** Módulos para explorar la base de datos (`explorer.html`) y acceder al sistema de almacenamiento (`storage-explorer.html`).
-- **Sistema de Exportación:** Herramienta dedicada (`export-panel.html`) para visualizar o respaldar datos.
-- **Diseño Responsive:** Adaptado para funcionar de manera fluida en dispositivos móviles, incluyendo un menú tipo hamburguesa en pantallas pequeñas.
+## 🚀 Características Avanzadas (v2.0 Beta)
 
-## 🛠️ Tecnologías Utilizadas
+### 1. Sistema de Presencia & Latencia (Heartbeat)
+- **Monitoreo Automático**: La aplicación registra la actividad cada 5 minutos (`serverTimestamp`) para mantener el campo `lastSeen` actualizado.
+- **Modo Incógnito**: Los usuarios pueden desactivar su visibilidad desde los ajustes, manteniendo la actualización de sesión pero ocultando el estado "En línea" (verde) a los demás.
 
-- **Frontend:** HTML5, CSS3 (Vanilla), JavaScript (ES6+ modular).
-- **Backend / BaaS:** Firebase (Firestore, Authentication, Storage).
-- **Build Tool:** Vite (^8.0).
-- **Iconografía:** Lucide Icons.
-- **APIs de Terceros:** Integración de geocodificación para la precisión de ubicaciones.
+### 2. Mapa Radar CRT (HUD)
+- **Interactividad Táctica**: Marcadores personalizados con animaciones de pulso (`pulse-glow`).
+- **Codificación de Estado**:
+    - 🟢 **Verde**: Usuarios conectados en tiempo real (`isOnline: true`).
+    - 🟡 **Ámbar**: Usuarios desconectados o en modo incógnito.
+- **Filtros de Pantalla**: Efectos de líneas de escaneo, parpadeo CRT y una paleta de colores de alto contraste optimizada para entornos oscuros.
 
-## 📂 Estructura del Proyecto
+### 3. Centro de Notificaciones HUD
+- **Real-time Toasts**: Notificaciones flotantes en el centro superior con un lenguaje de "Alerta de Sistema" para mensajes entrantes.
+- **Indicadores de Navegación (Badges)**: Puntos de alerta animados en el `TabBar` (móvil) y `Sidebar` (escritorio) que indican mensajes no leídos sin obstruir la vista.
+
+### 4. Mensajería Directa (Inbox)
+- **Chat 1-1**: Conversaciones encriptadas visualmente con burbujas de estilo HUD.
+- **Sincronización Total**: Estado de lectura ("visto") integrado con el sistema global de notificaciones.
+
+---
+
+## 🛠️ Stack Tecnológico
+
+- **Núcleo:** React 19 + Vite.
+- **Base de Datos:** Firebase Firestore (Real-time).
+- **Autenticación:** Firebase Auth (Soporta Anonymous y persistencia avanzada).
+- **Mapas:** Leaflet.js con capas de diseño oscuro personalizadas.
+- **Estilos:** Vanilla CSS con variables de diseño para una fácil tematización (Ámbar, Verde Fósforo, etc.).
+
+---
+
+## 📂 Estructura del Proyecto (Versión React)
 
 ```text
 citas-clon-v2/
-├── assets/           # Recursos estáticos (CSS, JS, imágenes)
-│   ├── css/          # Estilos de la aplicación y animaciones CRT
-│   └── js/           # Lógica JavaScript dividida en módulos
-├── node_modules/     # Dependencias del proyecto
-├── .env / .env.local # Variables de entorno (Firebase config, etc.)
-├── index.html        # Página principal (Feed de perfiles)
-├── create-profile.html # Creación y edición de perfiles
-├── map.html          # Vista de mapas e interfaces geográficas
-├── chat*.html        # Módulos de mensajería (Global e Inbox)
-├── profile.html      # Visualización de perfiles de otros usuarios
-├── activity.html     # Historial de actividades y likes
-├── vite.config.js    # Configuración de inicialización y build de Vite
-├── package.json      # Configuración de dependencias y scripts npm
-├── firebase.json     # Configuración de hosting e integración Firebase
-└── firestore.rules   # Reglas de seguridad de la base de datos Firestore
+├── react-app/
+│   ├── src/
+│   │   ├── components/    # Layout, Radar, Toasts, HUD Elements
+│   │   ├── context/       # AuthContext, ToastContext (Servicios globales)
+│   │   ├── pages/         # MapPage, InboxPage, FeedPage, MyProfile
+│   │   ├── lib/           # Utilidades (Firebase, Geo-logic)
+│   │   └── App.jsx        # Lógica central (Heartbeat presence)
+├── assets/                # Estilos (.css) y recursos compartidos
+├── public/                # Favicon.ico y assets estáticos del navegador
+└── vite.config.js         # Configuración del entorno de construcción
 ```
 
-## ⚙️ Instalación y Configuración
+---
 
-1. **Clonar el repositorio:**
+## ⚙️ Instalación
+
+1. **Clonar y Preparar**:
    ```bash
-   git clone <url-del-repositorio>
+   git clone <url-repo>
    cd citas-clon-v2
-   ```
-
-2. **Instalar dependencias:**
-   Asegúrate de tener Node.js instalado. Luego ejecuta:
-   ```bash
    npm install
    ```
 
-3. **Configuración de Variables de Entorno:**
-   El proyecto requiere credenciales de Firebase. Renombra `.env.example` a `.env.local` e introduce las credenciales correspondientes a tu proyecto de Firebase.
-   ```env
-   VITE_FIREBASE_API_KEY=tu_api_key
-   VITE_FIREBASE_AUTH_DOMAIN=tu_dominio.firebaseapp.com
-   VITE_FIREBASE_PROJECT_ID=tu_project_id
-   VITE_FIREBASE_STORAGE_BUCKET=tu_storage_bucket
-   VITE_FIREBASE_MESSAGING_SENDER_ID=tu_sender_id
-   VITE_FIREBASE_APP_ID=tu_app_id
+2. **Variables de Entorno**:
+   Crea un archivo `.env.local` con tus credenciales de Firebase.
+
+3. **Lanzar Sistema**:
+   ```bash
+   npm run dev
    ```
 
-## 🏃🏽‍♂️ Levantar en Modo Desarrollo
+---
 
-Para lanzar el servidor de desarrollo en local con Vite, ejecuta:
+## 📡 Protocolo de Desarrollo (Próximos Pasos)
+- [ ] Implementación de "Likes Recibidos" con notificaciones HUD.
+- [ ] Efectos de sonido de terminal para interacciones.
+- [ ] Optimización de carga de imágenes con WebP.
 
-```bash
-npm run dev
-```
-
-La aplicación normalmente estará disponible en `http://localhost:5173/`.
-
-## 📦 Construcción para Producción
-
-Para compilar y minificar la aplicación en la carpeta `dist/` lista para ser desplegada:
-
-```bash
-npm run build
-```
-
-*(Puedes probar el build de manera local con `npm run preview`)*
+---
+*Diseñado para wowear. Estética premium garantizada.*

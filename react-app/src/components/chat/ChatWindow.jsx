@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { db } from '../../lib/firebase';
 import { collection, query, orderBy, onSnapshot, addDoc, serverTimestamp, doc, updateDoc } from 'firebase/firestore';
 import { ArrowLeft, Send, CheckCircle, CheckCheck } from 'lucide-react';
@@ -8,6 +9,7 @@ export function ChatWindow({ conversationId, currentUserAlias, otherAlias, other
   const [messages, setMessages] = useState([]);
   const [inputText, setInputText] = useState('');
   const scrollRef = useRef(null);
+  const navigate = useNavigate();
 
   const isOnline = otherUser?.isOnline;
   const lastSeenStr = otherUser?.lastSeen ? formatRelativeTime(otherUser.lastSeen) : 'Desconocido';
@@ -97,8 +99,19 @@ export function ChatWindow({ conversationId, currentUserAlias, otherAlias, other
             </div>
           ) : (
             /* Live Header Content */
-            <>
-              <div style={{ position: 'relative' }}>
+            <div 
+              onClick={() => navigate(`/user/${encodeURIComponent(otherAlias)}`)}
+              style={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: '12px', 
+                flex: 1, 
+                cursor: 'pointer',
+                minWidth: 0
+              }}
+              title={`Ver perfil de ${otherAlias}`}
+            >
+              <div style={{ position: 'relative', flexShrink: 0 }}>
                 <img 
                   src={otherUser?.fotoPerfilUrl || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(otherAlias)} 
                   className="profile-photo"
@@ -127,7 +140,7 @@ export function ChatWindow({ conversationId, currentUserAlias, otherAlias, other
                   {statusLabel}
                 </span>
               </div>
-            </>
+            </div>
           )}
         </div>
       </div>
