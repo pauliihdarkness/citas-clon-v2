@@ -1,0 +1,14 @@
+[build]
+  # Forzar que el build se ejecute dentro de la subcarpeta react-app
+  command = "npm run build --prefix react-app"
+  publish = "react-app/dist"
+
+[[redirects]]
+  # Regla para manejar el enrutamiento de React (SPA)
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[build.environment]
+  # Asegurar que se usen las versiones correctas de Node/NPM si es necesario
+  NODE_VERSION = "20"
